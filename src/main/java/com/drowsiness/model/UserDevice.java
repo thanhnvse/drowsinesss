@@ -5,11 +5,12 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "user_device")
 @Data
-public class UserDevice {
+public class UserDevice implements Serializable {
     @Id
     @Column(name = "user_device_id", columnDefinition = "CHAR(32)")
     @GeneratedValue(generator = "uuid")
@@ -31,4 +32,7 @@ public class UserDevice {
 
     @Column(name = "connected_at")
     private Long connectedAt;
+
+    @Column(name = "updated_at")
+    private Long updatedAt;
 }

@@ -4,6 +4,7 @@ import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
 import com.drowsiness.dto.role.RoleDTO;
+import com.drowsiness.dto.role.RoleResponseDTO;
 import com.drowsiness.dto.user.UserCreateDTO;
 import com.drowsiness.dto.user.UserResponseDTO;
 import com.drowsiness.dto.user.UserUpdateDTO;
@@ -18,8 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -39,8 +40,13 @@ public class RoleController {
 
     @GetMapping("/roles")
     public ResponseEntity<?> getAllRoles() {
+        List<RoleResponseDTO> roleResponseDTOList = new ArrayList<>();
         List<Role> roleList = roleService.findAllRole();
-        SearchListResult<?> result = new SearchListResult<>(roleList);
+        for(Role role : roleList){
+            RoleResponseDTO roleResponseDTO = modelMapper.map(role, RoleResponseDTO.class);
+            roleResponseDTOList.add(roleResponseDTO);
+        }
+        SearchListResult<?> result = new SearchListResult<>(roleResponseDTOList);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

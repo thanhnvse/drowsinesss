@@ -8,6 +8,7 @@ import com.drowsiness.dto.response.SearchResult;
 import com.drowsiness.dto.user.UserUpdateDTO;
 import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.User;
+import com.drowsiness.service.RoleService;
 import com.drowsiness.service.UserService;
 import com.drowsiness.utils.StaticFuntion;
 import org.modelmapper.ModelMapper;
@@ -25,12 +26,18 @@ import java.util.Optional;
 @RequestMapping("/api/v1")
 public class UserController {
     private UserService userService;
+    private RoleService roleService;
     private ModelMapper modelMapper;
 //    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     @Autowired
@@ -63,7 +70,9 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserCreateDTO userDTO) {
         User reqUser = modelMapper.map(userDTO, User.class);
 //        reqUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        reqUser.setActive(true);
         reqUser.setCreatedAt(StaticFuntion.getDate());
+        reqUser.setRole(roleService.findRoleByRoleName("USER"));
         User createdUser = userService.saveUser(reqUser);
 
         UserResponseDTO userResponseDTO = modelMapper.map(createdUser, UserResponseDTO.class);
