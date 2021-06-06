@@ -60,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<?> createRenter(@RequestBody UserCreateDTO userDTO) {
+    public ResponseEntity<?> createUser(@RequestBody UserCreateDTO userDTO) {
         User reqUser = modelMapper.map(userDTO, User.class);
 //        reqUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         reqUser.setCreatedAt(StaticFuntion.getDate());
