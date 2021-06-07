@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -60,7 +61,7 @@ public class UserDeviceController {
     }
 
     @GetMapping("/user-devices/{userId}/user")
-    public ResponseEntity<?> getUserInDeviceConnectedByUserId(@PathVariable String userId) {
+    public ResponseEntity<?> getUserInDeviceConnectedByUserId(@PathVariable UUID userId) {
         User user = userDeviceService.findUserByUserDeviceConnected(userId);
         SearchResult<?> result = !user.equals(Optional.empty())
                 ? new SearchResult<>(user) : new SearchResult<>();
@@ -79,7 +80,7 @@ public class UserDeviceController {
 
         UserDevice reqUserDevice = new UserDevice();
 
-        reqUserDevice.setUser(userService.findUserByUserId(userDeviceDTO.getUserId()));
+        reqUserDevice.setAccountUser(userService.findUserByUserId(userDeviceDTO.getUserId()));
         reqUserDevice.setDevice(deviceService.findDeviceByDeviceId(userDeviceDTO.getDeviceId()));
 
         reqUserDevice.setConnectedAt(StaticFuntion.getDate());
@@ -93,8 +94,8 @@ public class UserDeviceController {
     }
 
     @PutMapping("/user-devices/user/{userId}/device/{deviceId}/connect")
-    public ResponseEntity<?> setConnectionUserInDevice(@PathVariable String userId, @PathVariable String deviceId, @RequestBody UserDeviceUpdateDTO userDeviceRequest) {
-        String userDeviceId = userDeviceService.findByUserIdAndDeviceId(userId,deviceId).getUserDeviceId();
+    public ResponseEntity<?> setConnectionUserInDevice(@PathVariable UUID userId, @PathVariable UUID deviceId, @RequestBody UserDeviceUpdateDTO userDeviceRequest) {
+        UUID userDeviceId = userDeviceService.findByUserIdAndDeviceId(userId,deviceId).getUserDeviceId();
         return userDeviceService.findUserDeviceById(userDeviceId).map(userDevice -> {
             userDevice.setConnected(userDeviceRequest.isConnected());
             userDevice.setUpdatedAt(StaticFuntion.getDate());

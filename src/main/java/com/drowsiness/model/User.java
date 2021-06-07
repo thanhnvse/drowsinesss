@@ -3,20 +3,20 @@ package com.drowsiness.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "user")
+@Table(name = "account_user")
 @Data
 public class User implements Serializable {
     @Id
-    @Column(name = "user_id", columnDefinition = "CHAR(32)")
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid")
-    private String userId;
+    @Column(name = "user_id")
+    private UUID userId;
 
     @Column(name = "user_name",nullable = false, length = 50)
     private String username;
@@ -33,7 +33,7 @@ public class User implements Serializable {
     private String avatar;
 
     //for MySQL
-    @Column(name = "is_active", columnDefinition = "tinyint(1) default 1", nullable = false)
+    @Column(name = "is_active", columnDefinition = "boolean default true", nullable = false)
     private boolean isActive;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -44,9 +44,12 @@ public class User implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "role_id")
-    @JsonBackReference
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "accountUser", cascade = CascadeType.ALL)
     private List<UserDevice> userDevices;
+
+    public User() {
+        this.userId = UUID.randomUUID();
+    }
 }

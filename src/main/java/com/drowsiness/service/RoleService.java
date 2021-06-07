@@ -5,12 +5,13 @@ import com.drowsiness.model.Role;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface RoleService {
     List<Role> findAllRole();
-    Optional<Role> findRoleById(String id);
+    Optional<Role> findRoleById(UUID id);
     Role findRoleByRoleName(String roleName);
-    Role findRoleByRoleId(String id);
+    Role findRoleByRoleId(UUID id);
     Role saveRole(Role role);
     void removeRole(Role role);
 }

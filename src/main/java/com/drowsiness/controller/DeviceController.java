@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -46,7 +47,7 @@ public class DeviceController {
     }
 
     @GetMapping("/devices/{deviceId}")
-    public ResponseEntity<?> getDeviceById(@PathVariable String deviceId) {
+    public ResponseEntity<?> getDeviceById(@PathVariable UUID deviceId) {
         Optional<Device> searchDevice = deviceService.findDeviceById(deviceId);
         SearchResult<?> result = !searchDevice.equals(Optional.empty())
                 ? new SearchResult<>(searchDevice.get()): new SearchResult<>();
@@ -67,7 +68,7 @@ public class DeviceController {
     }
 
     @PutMapping("/devices/{deviceId}")
-    public ResponseEntity<?> updateDevice(@PathVariable String deviceId, @RequestBody DeviceCreateDTO deviceRequest) {
+    public ResponseEntity<?> updateDevice(@PathVariable UUID deviceId, @RequestBody DeviceCreateDTO deviceRequest) {
         return deviceService.findDeviceById(deviceId).map(device -> {
             device.setDeviceName(deviceRequest.getDeviceName());
             device.setUpdatedAt(StaticFuntion.getDate());
@@ -77,7 +78,7 @@ public class DeviceController {
     }
 
     @DeleteMapping("/devices/{deviceId}")
-    public ResponseEntity<?> removeDevice(@PathVariable String deviceId) {
+    public ResponseEntity<?> removeDevice(@PathVariable UUID deviceId) {
         return deviceService.findDeviceById(deviceId).map(device -> {
             deviceService.removeDevice(device);
             return ResponseEntity.ok().build();
