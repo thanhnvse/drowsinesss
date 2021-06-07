@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -58,7 +59,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable String userId) {
+    public ResponseEntity<?> getUserById(@PathVariable UUID userId) {
         Optional<User> searchUser = userService.findUserById(userId);
         SearchResult<?> result = !searchUser.equals(Optional.empty())
         ? new SearchResult<>(searchUser.get()): new SearchResult<>();
@@ -81,7 +82,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}")
-    public ResponseEntity<?> updateUser(@PathVariable String userId, @RequestBody UserUpdateDTO userRequest) {
+    public ResponseEntity<?> updateUser(@PathVariable UUID userId, @RequestBody UserUpdateDTO userRequest) {
         return userService.findUserById(userId).map(user -> {
             user.setUsername(userRequest.getUsername());
             user.setFullName(userRequest.getFullName());
@@ -96,7 +97,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<?> removeUser(@PathVariable String userId) {
+    public ResponseEntity<?> removeUser(@PathVariable UUID userId) {
         return userService.findUserById(userId).map(user -> {
             userService.removeUser(user);
             return ResponseEntity.ok().build();

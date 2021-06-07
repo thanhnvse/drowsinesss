@@ -6,14 +6,15 @@ import com.drowsiness.model.UserDevice;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserDeviceService {
     List<UserDevice> findAllUserDevice();
-    User findUserByUserDeviceConnected(String userId);
-    UserDevice findByUserIdAndDeviceId(String userId, String deviceId);
-    UserDevice findDeviceByUserDeviceConnected(String deviceId);
-    Optional<UserDevice> findUserDeviceById(String id);
-    UserDevice findUserDeviceByUserDeviceId(String id);
+    User findUserByUserDeviceConnected(UUID userId);
+    UserDevice findByUserIdAndDeviceId(UUID userId, UUID deviceId);
+    UserDevice findDeviceByUserDeviceConnected(UUID deviceId);
+    Optional<UserDevice> findUserDeviceById(UUID id);
+    UserDevice findUserDeviceByUserDeviceId(UUID id);
     UserDevice saveUserDevice(UserDevice userDevice);
     void removeUserDevice(UserDevice userDevice);
 }

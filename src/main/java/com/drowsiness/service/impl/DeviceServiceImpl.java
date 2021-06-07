@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class DeviceServiceImpl implements DeviceService {
@@ -24,12 +25,12 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    public Optional<Device> findDeviceById(String id) {
+    public Optional<Device> findDeviceById(UUID id) {
         return deviceRepository.findById(id);
     }
 
     @Override
-    public Device findDeviceByDeviceId(String id) {
+    public Device findDeviceByDeviceId(UUID id) {
         return deviceRepository.findById(id).get();
     }
 

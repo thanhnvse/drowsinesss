@@ -51,7 +51,7 @@ public class RoleController {
     }
 
     @GetMapping("/roles/{roleId}")
-    public ResponseEntity<?> getRoleById(@PathVariable String roleId) {
+    public ResponseEntity<?> getRoleById(@PathVariable UUID roleId) {
         Optional<Role> searchRole = roleService.findRoleById(roleId);
         SearchResult<?> result = !searchRole.equals(Optional.empty())
                 ? new SearchResult<>(searchRole.get()): new SearchResult<>();
@@ -71,7 +71,7 @@ public class RoleController {
     }
 
     @PutMapping("/roles/{roleId}")
-    public ResponseEntity<?> updateRole(@PathVariable String roleId, @RequestBody RoleDTO roleRequest) {
+    public ResponseEntity<?> updateRole(@PathVariable UUID roleId, @RequestBody RoleDTO roleRequest) {
         return roleService.findRoleById(roleId).map(role -> {
             role.setRoleName(roleRequest.getRoleName());
             roleService.saveRole(role);
@@ -80,7 +80,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/roles/{roleId}")
-    public ResponseEntity<?> removeRole(@PathVariable String roleId) {
+    public ResponseEntity<?> removeRole(@PathVariable UUID roleId) {
         return roleService.findRoleById(roleId).map(role -> {
             roleService.removeRole(role);
             return ResponseEntity.ok().build();

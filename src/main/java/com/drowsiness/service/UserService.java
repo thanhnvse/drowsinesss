@@ -4,11 +4,12 @@ import com.drowsiness.model.User;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserService {
     List<User> findAllUser();
-    Optional<User> findUserById(String id);
-    User findUserByUserId(String id);
+    Optional<User> findUserById(UUID id);
+    User findUserByUserId(UUID id);
     User saveUser(User user);
     void removeUser(User user);
 }

@@ -7,15 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserDeviceRepository extends JpaRepository<UserDevice, String> {
-    @Query("SELECT u FROM User u WHERE u.userId = (SELECT ud.user.userId FROM UserDevice ud WHERE ud.isConnected = true " +
-            "AND ud.user.userId = :userId)")
-    User findByUserIdAndConnected(@Param("userId") String userId);
+import java.util.UUID;
 
-    @Query("SELECT ud FROM UserDevice ud WHERE ud.user.userId = :userId AND ud.device.deviceId = :deviceId")
-    UserDevice findByUserIdAndDeviceId(@Param("userId") String userId, @Param("deviceId") String deviceId);
+@Repository
+public interface UserDeviceRepository extends JpaRepository<UserDevice, UUID> {
+    @Query("SELECT u FROM User u WHERE u.userId = (SELECT ud.accountUser.userId FROM UserDevice ud WHERE ud.isConnected = true " +
+            "AND ud.accountUser.userId = :userId)")
+    User findByUserIdAndConnected(@Param("userId") UUID userId);
+
+    @Query("SELECT ud FROM UserDevice ud WHERE ud.accountUser.userId = :userId AND ud.device.deviceId = :deviceId")
+    UserDevice findByUserIdAndDeviceId(@Param("userId") UUID userId, @Param("deviceId") UUID deviceId);
 
     @Query("SELECT ud FROM UserDevice ud WHERE ud.isConnected = true AND ud.device.deviceId = :deviceId")
-    UserDevice findByDeviceIdAndAndConnected(@Param("deviceId") String deviceId);
+    UserDevice findByDeviceIdAndAndConnected(@Param("deviceId") UUID deviceId);
 }

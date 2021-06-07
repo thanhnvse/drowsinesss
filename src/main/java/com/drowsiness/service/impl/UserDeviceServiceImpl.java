@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserDeviceServiceImpl implements UserDeviceService {
@@ -26,27 +27,27 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     }
 
     @Override
-    public User findUserByUserDeviceConnected(String userId) {
+    public User findUserByUserDeviceConnected(UUID userId) {
         return userDeviceRepository.findByUserIdAndConnected(userId);
     }
 
     @Override
-    public UserDevice findByUserIdAndDeviceId(String userId, String deviceId) {
+    public UserDevice findByUserIdAndDeviceId(UUID userId, UUID deviceId) {
         return userDeviceRepository.findByUserIdAndDeviceId(userId,deviceId);
     }
 
     @Override
-    public UserDevice findDeviceByUserDeviceConnected(String deviceId) {
+    public UserDevice findDeviceByUserDeviceConnected(UUID deviceId) {
         return userDeviceRepository.findByDeviceIdAndAndConnected(deviceId);
     }
 
     @Override
-    public Optional<UserDevice> findUserDeviceById(String id) {
+    public Optional<UserDevice> findUserDeviceById(UUID id) {
         return userDeviceRepository.findById(id);
     }
 
     @Override
-    public UserDevice findUserDeviceByUserDeviceId(String id) {
+    public UserDevice findUserDeviceByUserDeviceId(UUID id) {
         return userDeviceRepository.findById(id).get();
     }
 
