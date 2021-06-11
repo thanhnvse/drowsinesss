@@ -1,6 +1,7 @@
 package com.drowsiness.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -47,9 +48,11 @@ public class User implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "role_id")
+    @JsonIgnore
     private Role role;
 
     @OneToMany(mappedBy = "accountUser", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<UserDevice> userDevices;
 
     public User() {

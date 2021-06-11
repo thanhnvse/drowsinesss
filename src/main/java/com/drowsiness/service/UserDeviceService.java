@@ -12,6 +12,7 @@ public interface UserDeviceService {
     List<UserDevice> findAllUserDevice();
     User findUserByUserDeviceConnected(UUID userId);
     UserDevice findByUserIdAndDeviceId(UUID userId, UUID deviceId);
+    boolean checkExistedUser(UUID userId, UUID deviceId);
     UserDevice findDeviceByUserDeviceConnected(UUID deviceId);
     Optional<UserDevice> findUserDeviceById(UUID id);
     UserDevice findUserDeviceByUserDeviceId(UUID id);

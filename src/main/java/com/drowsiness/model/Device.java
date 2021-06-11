@@ -1,5 +1,6 @@
 package com.drowsiness.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -29,6 +30,7 @@ public class Device implements Serializable {
     private Long updatedAt;
 
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<UserDevice> userDevices;
 
     public Device() {

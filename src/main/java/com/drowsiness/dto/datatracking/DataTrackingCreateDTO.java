@@ -9,4 +9,5 @@ import java.util.UUID;
 public class DataTrackingCreateDTO implements Serializable {
     private UUID userId;
     private UUID deviceId;
+    private String imageUrl;
 }

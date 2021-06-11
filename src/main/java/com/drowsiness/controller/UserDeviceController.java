@@ -6,6 +6,7 @@ import com.drowsiness.dto.response.SearchResult;
 import com.drowsiness.dto.user.UserCreateDTO;
 import com.drowsiness.dto.user.UserResponseDTO;
 import com.drowsiness.dto.user.UserUpdateDTO;
+import com.drowsiness.dto.userdevice.UserDeviceConnectedResponseDTO;
 import com.drowsiness.dto.userdevice.UserDeviceCreateDTO;
 import com.drowsiness.dto.userdevice.UserDeviceUpdateDTO;
 import com.drowsiness.exception.ResourceNotFoundException;
@@ -72,12 +73,25 @@ public class UserDeviceController {
     @PostMapping("/user-devices")
     public ResponseEntity<?> connectUserInDevice(@RequestBody UserDeviceCreateDTO userDeviceDTO) {
 //        UserDevice reqUserDevice = modelMapper.map(userDeviceDTO, UserDevice.class);
+
+        //check the last connected user in device
+        //withdraw the last user
         UserDevice userDevice = userDeviceService.findDeviceByUserDeviceConnected(userDeviceDTO.getDeviceId());
         if(userDevice != null){
             userDevice.setConnected(false);
             userDeviceService.saveUserDevice(userDevice);
         }
 
+        //check existed
+        if(userDeviceService.checkExistedUser(userDeviceDTO.getUserId(),userDeviceDTO.getDeviceId())){
+            UserDevice existedUser = userDeviceService.findByUserIdAndDeviceId(userDeviceDTO.getUserId(),userDeviceDTO.getDeviceId());
+            existedUser.setConnected(true);
+            UserDevice updateConnectedUserDevice = userDeviceService.saveUserDevice(existedUser);
+            UserDeviceConnectedResponseDTO userDeviceUpdateResponseDTO = modelMapper.map(updateConnectedUserDevice, UserDeviceConnectedResponseDTO.class);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResult<>(userDeviceUpdateResponseDTO,"Your acccount has been connected with device"));
+        }
+
+        //connect with new user
         UserDevice reqUserDevice = new UserDevice();
 
         reqUserDevice.setAccountUser(userService.findUserByUserId(userDeviceDTO.getUserId()));
@@ -88,8 +102,8 @@ public class UserDeviceController {
 
         UserDevice createdUserDevice = userDeviceService.saveUserDevice(reqUserDevice);
 
-        UserResponseDTO userResponseDTO = modelMapper.map(createdUserDevice, UserResponseDTO.class);
-        ApiResult<?> apiResult = new ApiResult<>(userResponseDTO,"Your account has been connected with device successfully");
+        UserDeviceConnectedResponseDTO userDeviceResponseDTO = modelMapper.map(createdUserDevice, UserDeviceConnectedResponseDTO.class);
+        ApiResult<?> apiResult = new ApiResult<>(userDeviceResponseDTO,"Your account has been connected with device successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
 
@@ -99,6 +113,11 @@ public class UserDeviceController {
         return userDeviceService.findUserDeviceById(userDeviceId).map(userDevice -> {
             userDevice.setConnected(userDeviceRequest.isConnected());
             userDevice.setUpdatedAt(StaticFuntion.getDate());
+            if (userDeviceRequest.isConnected()) {
+                userDevice.setConnectedAt(StaticFuntion.getDate());
+            } else {
+                userDevice.setDisconnectedAt(StaticFuntion.getDate());
+            }
             userDeviceService.saveUserDevice(userDevice);
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(userDeviceRequest,"Your account has been updated the connection successfully"));
         }).orElseThrow(() -> new ResourceNotFoundException("UserDevice not found with id " + userDeviceId));

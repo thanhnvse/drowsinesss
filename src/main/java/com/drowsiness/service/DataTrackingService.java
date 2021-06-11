@@ -12,5 +12,5 @@ public interface DataTrackingService {
     Optional<DataTracking> findDataTrackingById(UUID id);
     DataTracking findDataTrackingByDataTrackingId(UUID id);
     DataTracking saveDataTracking(DataTracking dataTracking);
-    DataTracking findByUserDeviceId(UUID userId, UUID deviceId);
+    List<DataTracking> findByUserDeviceIdFromUserIdAndDeviceId(UUID userId, UUID deviceId);
 }
