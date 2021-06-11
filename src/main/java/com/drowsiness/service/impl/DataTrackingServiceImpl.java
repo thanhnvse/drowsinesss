@@ -45,7 +45,7 @@ public class DataTrackingServiceImpl implements DataTrackingService {
     }
 
     @Override
-    public DataTracking findByUserDeviceId(UUID userId, UUID deviceId) {
-        return dataTrackingRepository.findByUserDeviceId(userId,deviceId);
+    public List<DataTracking> findByUserDeviceIdFromUserIdAndDeviceId(UUID userId, UUID deviceId) {
+        return dataTrackingRepository.findByUserDeviceIdFromUserIdAndDeviceId(userId,deviceId);
     }
 }

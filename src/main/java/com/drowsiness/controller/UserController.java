@@ -73,6 +73,7 @@ public class UserController {
 //        reqUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         reqUser.setActive(true);
         reqUser.setCreatedAt(StaticFuntion.getDate());
+        reqUser.setPhoneNumber(userDTO.getPhoneNumber());
         reqUser.setRole(roleService.findRoleByRoleName("USER"));
         User createdUser = userService.saveUser(reqUser);
 

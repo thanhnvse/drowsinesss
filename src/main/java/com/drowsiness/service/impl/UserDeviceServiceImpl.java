@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserDeviceServiceImpl implements UserDeviceService {
+public class UserDeviceServiceImpl implements UserDeviceService{
     private UserDeviceRepository userDeviceRepository;
 
     @Autowired
@@ -34,6 +34,11 @@ public class UserDeviceServiceImpl implements UserDeviceService {
     @Override
     public UserDevice findByUserIdAndDeviceId(UUID userId, UUID deviceId) {
         return userDeviceRepository.findByUserIdAndDeviceId(userId,deviceId);
+    }
+
+    @Override
+    public boolean checkExistedUser(UUID userId, UUID deviceId) {
+        return userDeviceRepository.existsByUserDeviceId(userId,deviceId);
     }
 
     @Override

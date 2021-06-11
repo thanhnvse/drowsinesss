@@ -64,6 +64,13 @@ public class DataTrackingController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping("/data-trackings/users/{userId}/devices/{deviceId}")
+    public ResponseEntity<?> getAllDataTrackingsByUserDeviceId(@PathVariable UUID userId, @PathVariable UUID deviceId) {
+        List<DataTracking> dataTrackingList = dataTrackingService.findByUserDeviceIdFromUserIdAndDeviceId(userId,deviceId);
+        SearchListResult<?> result = new SearchListResult<>(dataTrackingList);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     @GetMapping("/data-trackings/data-tracking-not-deleted")
     public ResponseEntity<?> getAllDataTrackingsNotDeleted() {
         List<DataTracking> dataTrackingList = dataTrackingService.findAllDataTrackingNotDeleted();
@@ -85,6 +92,7 @@ public class DataTrackingController {
         DataTracking dataTracking = new DataTracking();
         dataTracking.setUserDevice(userDeviceService.findByUserIdAndDeviceId
                 (dataTrackingCreateDTO.getUserId(),dataTrackingCreateDTO.getDeviceId()));
+        dataTracking.setImageUrl(dataTrackingCreateDTO.getImageUrl());
         dataTracking.setTrackingAt(StaticFuntion.getDate());
         dataTracking.setDeleted(false);
 
@@ -98,17 +106,15 @@ public class DataTrackingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
 
-    @PutMapping("/users/{userId}/devices/{deviceId}/data-trackings")
-    public ResponseEntity<?> updateDataTracking(@PathVariable UUID userId, @PathVariable UUID deviceId,
-                                                @RequestBody DataTrackingUpdateDTO dataTrackingRequest) {
+    @PutMapping("/data-trackings/{dataTrackingId}")
+    public ResponseEntity<?> updateDataTracking(@PathVariable UUID dataTrackingId, @RequestBody DataTrackingUpdateDTO dataTrackingRequest) {
         return dataTrackingService.findDataTrackingById(dataTrackingService
-                .findByUserDeviceId(userId,deviceId).getDataTrackingId()).map(dataTracking -> {
+                .findDataTrackingById(dataTrackingId).get().getDataTrackingId()).map(dataTracking -> {
             dataTracking.setDeleted(dataTrackingRequest.isDeleted());
             dataTracking.setTrackingAt(StaticFuntion.getDate());
             dataTrackingService.saveDataTracking(dataTracking);
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ApiResult<>(dataTrackingRequest,"Your data tracking has been updated successfully"));
-        }).orElseThrow(() -> new ResourceNotFoundException("Data tracking not found with user id "
-                + userId + ", device id "+deviceId));
+        }).orElseThrow(() -> new ResourceNotFoundException("Data tracking not found with data tracking id " + dataTrackingId ));
     }
 }
