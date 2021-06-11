@@ -22,6 +22,9 @@ public class DataTracking implements Serializable {
     @Column(name = "is_deleted", columnDefinition = "boolean default false", nullable = false)
     private boolean isDeleted;
 
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+
     @ManyToOne
     @JoinColumn(name = "user_device_id")
     @JsonBackReference
