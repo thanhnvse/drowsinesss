@@ -37,6 +37,9 @@ public class UserDevice implements Serializable {
     @Column(name = "updated_at")
     private Long updatedAt;
 
+    @Column(name = "disconnected_at")
+    private Long disconnectedAt;
+
     @OneToMany(mappedBy = "userDevice", cascade = CascadeType.ALL)
     private List<DataTracking> dataTrackings;
 
