@@ -1,10 +1,7 @@
 package com.drowsiness.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,7 +13,7 @@ import java.util.UUID;
 @Data
 public class User implements Serializable {
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", unique = true)
     private UUID userId;
 
     @Column(name = "user_name",nullable = false, length = 50)
@@ -25,7 +22,7 @@ public class User implements Serializable {
     @Column(name = "full_name",nullable = false, length = 50)
     private String fullName;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 255)
     private String password;
 
     @Column(name = "phone_number", nullable = false, length = 10)
@@ -57,5 +54,14 @@ public class User implements Serializable {
 
     public User() {
         this.userId = UUID.randomUUID();
+    }
+
+    public User( String fullName, String username, String email, String password, Role role, String phoneNumber) {
+        this.username = username;
+        this.fullName = fullName;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.phoneNumber = phoneNumber;
     }
 }

@@ -12,4 +12,6 @@ public interface UserService {
     User findUserByUserId(UUID id);
     User saveUser(User user);
     void removeUser(User user);
+    User login(String username, String password);
+    User findUserByUsername(String username);
 }
