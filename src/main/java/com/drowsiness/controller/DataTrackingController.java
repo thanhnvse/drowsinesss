@@ -87,23 +87,6 @@ public class DataTrackingController {
     //for admin
     @GetMapping("/devices/data-trackings")
     public ResponseEntity<?> getDataTrackingsByDevices() {
-//        List<DeviceResponseForDataTrackingDTO> deviceResponseForDataTrackingDTOS  = new ArrayList<>();
-//        List<DeviceResponseForDataTrackingDTO> deviceList = (List<DeviceResponseForDataTrackingDTO>)deviceService.findAllDevice().stream().map(device -> {
-//
-//            List<UserResponseForDataTrackingDTO> userResponseForDataTrackingDTOS = new ArrayList<>();
-//            List<UserResponseForDataTrackingDTO> userList = (List<UserResponseForDataTrackingDTO>)
-//                    userDeviceService.findUserByDeviceId(device.getDeviceId()).stream().map(user -> {
-//                UserResponseForDataTrackingDTO userResponse = modelMapper.map(user,UserResponseForDataTrackingDTO.class);
-//                userResponse.setDataTrackings(dataTrackingService.findByUserDeviceIdFromUserId(user.getUserId()));
-//                userResponseForDataTrackingDTOS.add(userResponse);
-//                return userResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
-//            });
-//
-//            DeviceResponseForDataTrackingDTO deviceResponseForDataTrackingDTO = modelMapper.map(device,DeviceResponseForDataTrackingDTO.class);
-//            deviceResponseForDataTrackingDTO.setUserResponseForDataTrackingDTOList(userList);
-//            deviceResponseForDataTrackingDTOS.add(deviceResponseForDataTrackingDTO);
-//            return deviceResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
-//        });
         List<DeviceResponseForDataTrackingDTO> deviceList = new ArrayList<>();
         List<Device> devices = deviceService.findAllDevice();
         for(Device device : devices){
