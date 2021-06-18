@@ -2,6 +2,7 @@ package com.drowsiness.controller;
 
 import com.drowsiness.dto.datatracking.DataTrackingCreateDTO;
 import com.drowsiness.dto.datatracking.DataTrackingResponseDTO;
+import com.drowsiness.dto.datatracking.DataTrackingResponseForUserAndDeviceDTO;
 import com.drowsiness.dto.datatracking.DataTrackingUpdateDTO;
 import com.drowsiness.dto.device.DeviceResponseForDataTrackingDTO;
 import com.drowsiness.dto.response.ApiResult;
@@ -86,25 +87,7 @@ public class DataTrackingController {
     //for admin
     @GetMapping("/devices/data-trackings")
     public ResponseEntity<?> getDataTrackingsByDevices() {
-//        List<DeviceResponseForDataTrackingDTO> deviceResponseForDataTrackingDTOS  = new ArrayList<>();
-//        List<DeviceResponseForDataTrackingDTO> deviceList = (List<DeviceResponseForDataTrackingDTO>)deviceService.findAllDevice().stream().map(device -> {
-//
-//            List<UserResponseForDataTrackingDTO> userResponseForDataTrackingDTOS = new ArrayList<>();
-//            List<UserResponseForDataTrackingDTO> userList = (List<UserResponseForDataTrackingDTO>)
-//                    userDeviceService.findUserByDeviceId(device.getDeviceId()).stream().map(user -> {
-//                UserResponseForDataTrackingDTO userResponse = modelMapper.map(user,UserResponseForDataTrackingDTO.class);
-//                userResponse.setDataTrackings(dataTrackingService.findByUserDeviceIdFromUserId(user.getUserId()));
-//                userResponseForDataTrackingDTOS.add(userResponse);
-//                return userResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
-//            });
-//
-//            DeviceResponseForDataTrackingDTO deviceResponseForDataTrackingDTO = modelMapper.map(device,DeviceResponseForDataTrackingDTO.class);
-//            deviceResponseForDataTrackingDTO.setUserResponseForDataTrackingDTOList(userList);
-//            deviceResponseForDataTrackingDTOS.add(deviceResponseForDataTrackingDTO);
-//            return deviceResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
-//        });
         List<DeviceResponseForDataTrackingDTO> deviceList = new ArrayList<>();
-        List<UserResponseForDataTrackingDTO> user1List = new ArrayList<>();
         List<Device> devices = deviceService.findAllDevice();
         for(Device device : devices){
             DeviceResponseForDataTrackingDTO deviceResponse = new DeviceResponseForDataTrackingDTO();
@@ -112,9 +95,11 @@ public class DataTrackingController {
             deviceResponse.setDeviceName(device.getDeviceName());
             deviceResponse.setCreatedAt(device.getCreatedAt());
             deviceResponse.setUpdatedAt(device.getUpdatedAt());
-            UserResponseForDataTrackingDTO userResponseForDataTrackingDTO = new UserResponseForDataTrackingDTO();
+
             List<User> userList = userDeviceService.findUserByDeviceId(device.getDeviceId());
+            List<UserResponseForDataTrackingDTO> user1List = new ArrayList<>();
             for(User user : userList){
+                UserResponseForDataTrackingDTO userResponseForDataTrackingDTO = new UserResponseForDataTrackingDTO();
                 userResponseForDataTrackingDTO.setUserId(user.getUserId());
                 userResponseForDataTrackingDTO.setFullName(user.getFullName());
                 userResponseForDataTrackingDTO.setUsername(user.getUsername());
@@ -124,10 +109,21 @@ public class DataTrackingController {
                 userResponseForDataTrackingDTO.setCreatedAt(user.getCreatedAt());
                 userResponseForDataTrackingDTO.setUpdatedAt(user.getUpdatedAt());
                 userResponseForDataTrackingDTO.setEmail(user.getEmail());
-                userResponseForDataTrackingDTO.setDataTrackings(dataTrackingService.findByUserDeviceIdFromUserId(user.getUserId()));
+
+                List<DataTracking> dataTrackings = dataTrackingService.findByUserDeviceIdFromUserId(user.getUserId());
+                List<DataTrackingResponseForUserAndDeviceDTO> dataTrackingList = new ArrayList<>();
+                for(DataTracking dataTracking : dataTrackings){
+                    DataTrackingResponseForUserAndDeviceDTO dataTrackingResponse = new DataTrackingResponseForUserAndDeviceDTO();
+                    dataTrackingResponse.setDataTrackingId(dataTracking.getDataTrackingId());
+                    dataTrackingResponse.setTrackingAt(dataTracking.getTrackingAt());
+                    dataTrackingResponse.setDeleted(dataTracking.isDeleted());
+                    dataTrackingResponse.setImageUrl(dataTracking.getImageUrl());
+                    dataTrackingList.add(dataTrackingResponse);
+                }
+                userResponseForDataTrackingDTO.setDataTrackings(dataTrackingList);
                 user1List.add(userResponseForDataTrackingDTO);
             }
-            deviceResponse.setUserResponseForDataTrackingDTOList(user1List);
+            deviceResponse.setUsers(user1List);
             deviceList.add(deviceResponse);
         }
         SearchListResult<?> result = new SearchListResult<>(deviceList);

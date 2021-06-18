@@ -16,5 +16,5 @@ public class DeviceResponseForDataTrackingDTO {
 
     private Long updatedAt;
 
-    private List<UserResponseForDataTrackingDTO> userResponseForDataTrackingDTOList;
+    private List<UserResponseForDataTrackingDTO> users;
 }

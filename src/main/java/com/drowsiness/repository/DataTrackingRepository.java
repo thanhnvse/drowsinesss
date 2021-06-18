@@ -20,7 +20,6 @@ public interface DataTrackingRepository extends JpaRepository<DataTracking, UUID
     List<DataTracking> findByUserDeviceIdFromUserIdAndDeviceId(@Param("userId") UUID userId, @Param("deviceId") UUID deviceId);
 
     @Query("SELECT d FROM DataTracking d WHERE d.userDevice.userDeviceId = " +
-            "(SELECT u.userDeviceId FROM UserDevice u WHERE u.accountUser.userId = :userId" +
-            " AND u.isConnected = true)")
+            "(SELECT u.userDeviceId FROM UserDevice u WHERE u.accountUser.userId = :userId)")
     List<DataTracking> findByUserDeviceIdFromUserId(@Param("userId") UUID userId);
 }
