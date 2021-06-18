@@ -1,6 +1,6 @@
 package com.drowsiness.dto.user;
 
-import com.drowsiness.model.DataTracking;
+import com.drowsiness.dto.datatracking.DataTrackingResponseForUserAndDeviceDTO;
 import lombok.Data;
 
 import java.util.List;
@@ -26,5 +26,5 @@ public class UserResponseForDataTrackingDTO {
 
     private Long updatedAt;
 
-    private List<DataTracking> dataTrackings;
+    private List<DataTrackingResponseForUserAndDeviceDTO> dataTrackings;
 }
