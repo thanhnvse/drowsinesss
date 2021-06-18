@@ -1,10 +1,10 @@
 package com.drowsiness.controller;
 
-import com.drowsiness.dto.user.UserCreateDTO;
-import com.drowsiness.dto.user.UserResponseDTO;
 import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
+import com.drowsiness.dto.user.UserCreateDTO;
+import com.drowsiness.dto.user.UserResponseDTO;
 import com.drowsiness.dto.user.UserUpdateDTO;
 import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.User;
@@ -15,14 +15,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+//import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
+
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
@@ -71,10 +73,11 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserCreateDTO userDTO) {
         User reqUser = modelMapper.map(userDTO, User.class);
 //        reqUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        reqUser.setPassword(userDTO.getPassword());
         reqUser.setActive(true);
         reqUser.setCreatedAt(StaticFuntion.getDate());
         reqUser.setPhoneNumber(userDTO.getPhoneNumber());
-        reqUser.setRole(roleService.findRoleByRoleName("USER"));
+        reqUser.setRole(roleService.findRoleByRoleName("ROLE_USER"));
         User createdUser = userService.saveUser(reqUser);
 
         UserResponseDTO userResponseDTO = modelMapper.map(createdUser, UserResponseDTO.class);
@@ -87,6 +90,7 @@ public class UserController {
         return userService.findUserById(userId).map(user -> {
             user.setUsername(userRequest.getUsername());
             user.setFullName(userRequest.getFullName());
+//            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
             user.setPassword(userRequest.getPassword());
             user.setEmail(userRequest.getEmail());
             user.setActive(userRequest.isActive());
@@ -104,5 +108,22 @@ public class UserController {
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
     }
+
+//    @PostMapping("/login/{username}/{password}")
+//    public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
+//
+//        User createdUser = userService.login(username,password);
+//        if(createdUser == null){
+//            if(userService.findUserByUsername(username) != null){
+//                ApiResult<?> apiResult = new ApiResult<>("Your password account is incorrect");
+//                return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+//            }
+//            ApiResult<?> apiResult = new ApiResult<>("Your account doesn't sign up before");
+//            return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+//        }
+//        UserResponseDTO userResponseDTO = modelMapper.map(createdUser, UserResponseDTO.class);
+//        ApiResult<?> apiResult = new ApiResult<>(userResponseDTO,"Your account has been signed in successfully");
+//        return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+//    }
     
 }

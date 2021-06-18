@@ -1,6 +1,5 @@
 package com.drowsiness.service;
 
-import com.drowsiness.model.Device;
 import com.drowsiness.model.User;
 import com.drowsiness.model.UserDevice;
 

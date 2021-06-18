@@ -54,7 +54,7 @@ public class UserDeviceController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/use-devices")
+    @GetMapping("/user-devices")
     public ResponseEntity<?> getAllUserDevices() {
         List<UserDevice> userDeviceList = userDeviceService.findAllUserDevice();
         SearchListResult<?> result = new SearchListResult<>(userDeviceList);

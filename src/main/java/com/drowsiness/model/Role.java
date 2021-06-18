@@ -1,8 +1,8 @@
 package com.drowsiness.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,6 +21,8 @@ public class Role implements Serializable {
     private String roleName;
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JsonBackReference
     private List<User> users;
 
     public Role() {
