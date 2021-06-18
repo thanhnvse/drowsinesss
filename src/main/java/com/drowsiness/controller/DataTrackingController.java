@@ -3,11 +3,15 @@ package com.drowsiness.controller;
 import com.drowsiness.dto.datatracking.DataTrackingCreateDTO;
 import com.drowsiness.dto.datatracking.DataTrackingResponseDTO;
 import com.drowsiness.dto.datatracking.DataTrackingUpdateDTO;
+import com.drowsiness.dto.device.DeviceResponseForDataTrackingDTO;
 import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
+import com.drowsiness.dto.user.UserResponseForDataTrackingDTO;
 import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.DataTracking;
+import com.drowsiness.model.Device;
+import com.drowsiness.model.User;
 import com.drowsiness.service.DataTrackingService;
 import com.drowsiness.service.DeviceService;
 import com.drowsiness.service.UserDeviceService;
@@ -19,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -79,29 +84,55 @@ public class DataTrackingController {
     }
 
     //for admin
-//    @GetMapping("/devices/data-trackings")
-//    public ResponseEntity<?> getDataTrackingsByDevices() {
-////        List<DeviceResponseForDataTrackingDTO> deviceResponseForDataTrackingDTOS  = new ArrayList<>();
-////        List<DeviceResponseForDataTrackingDTO> deviceList = (List<DeviceResponseForDataTrackingDTO>)deviceService.findAllDevice().stream().map(device -> {
-////
-////            List<UserResponseForDataTrackingDTO> userResponseForDataTrackingDTOS = new ArrayList<>();
-////            List<UserResponseForDataTrackingDTO> userList = (List<UserResponseForDataTrackingDTO>)
-////                    userDeviceService.findUserByDeviceId(device.getDeviceId()).stream().map(user -> {
-////                UserResponseForDataTrackingDTO userResponse = modelMapper.map(user,UserResponseForDataTrackingDTO.class);
-////                userResponse.setDataTrackings(dataTrackingService.findByUserDeviceIdFromUserId(user.getUserId()));
-////                userResponseForDataTrackingDTOS.add(userResponse);
-////                return userResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
-////            });
-////
-////            DeviceResponseForDataTrackingDTO deviceResponseForDataTrackingDTO = modelMapper.map(device,DeviceResponseForDataTrackingDTO.class);
-////            deviceResponseForDataTrackingDTO.setUserResponseForDataTrackingDTOList(userList);
-////            deviceResponseForDataTrackingDTOS.add(deviceResponseForDataTrackingDTO);
-////            return deviceResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
-////        });
-//        List<UserDevice> userDeviceList = (List<UserDevice>) deviceService.findAllDevice().stream().map(device -> userDeviceService.findUserDeviceByDeviceId(device.getDeviceId()).stream().collect(Collectors.toList()));
-//        SearchListResult<?> result = new SearchListResult<>(userDeviceList);
-//        return ResponseEntity.status(HttpStatus.OK).body(result);
-//    }
+    @GetMapping("/devices/data-trackings")
+    public ResponseEntity<?> getDataTrackingsByDevices() {
+//        List<DeviceResponseForDataTrackingDTO> deviceResponseForDataTrackingDTOS  = new ArrayList<>();
+//        List<DeviceResponseForDataTrackingDTO> deviceList = (List<DeviceResponseForDataTrackingDTO>)deviceService.findAllDevice().stream().map(device -> {
+//
+//            List<UserResponseForDataTrackingDTO> userResponseForDataTrackingDTOS = new ArrayList<>();
+//            List<UserResponseForDataTrackingDTO> userList = (List<UserResponseForDataTrackingDTO>)
+//                    userDeviceService.findUserByDeviceId(device.getDeviceId()).stream().map(user -> {
+//                UserResponseForDataTrackingDTO userResponse = modelMapper.map(user,UserResponseForDataTrackingDTO.class);
+//                userResponse.setDataTrackings(dataTrackingService.findByUserDeviceIdFromUserId(user.getUserId()));
+//                userResponseForDataTrackingDTOS.add(userResponse);
+//                return userResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
+//            });
+//
+//            DeviceResponseForDataTrackingDTO deviceResponseForDataTrackingDTO = modelMapper.map(device,DeviceResponseForDataTrackingDTO.class);
+//            deviceResponseForDataTrackingDTO.setUserResponseForDataTrackingDTOList(userList);
+//            deviceResponseForDataTrackingDTOS.add(deviceResponseForDataTrackingDTO);
+//            return deviceResponseForDataTrackingDTOS.stream().collect(Collectors.toList());
+//        });
+        List<DeviceResponseForDataTrackingDTO> deviceList = new ArrayList<>();
+        List<UserResponseForDataTrackingDTO> user1List = new ArrayList<>();
+        List<Device> devices = deviceService.findAllDevice();
+        for(Device device : devices){
+            DeviceResponseForDataTrackingDTO deviceResponse = new DeviceResponseForDataTrackingDTO();
+            deviceResponse.setDeviceId(device.getDeviceId());
+            deviceResponse.setDeviceName(device.getDeviceName());
+            deviceResponse.setCreatedAt(device.getCreatedAt());
+            deviceResponse.setUpdatedAt(device.getUpdatedAt());
+            UserResponseForDataTrackingDTO userResponseForDataTrackingDTO = new UserResponseForDataTrackingDTO();
+            List<User> userList = userDeviceService.findUserByDeviceId(device.getDeviceId());
+            for(User user : userList){
+                userResponseForDataTrackingDTO.setUserId(user.getUserId());
+                userResponseForDataTrackingDTO.setFullName(user.getFullName());
+                userResponseForDataTrackingDTO.setUsername(user.getUsername());
+                userResponseForDataTrackingDTO.setPhoneNumber(user.getPhoneNumber());
+                userResponseForDataTrackingDTO.setActive(user.isActive());
+                userResponseForDataTrackingDTO.setAvatar(user.getAvatar());
+                userResponseForDataTrackingDTO.setCreatedAt(user.getCreatedAt());
+                userResponseForDataTrackingDTO.setUpdatedAt(user.getUpdatedAt());
+                userResponseForDataTrackingDTO.setEmail(user.getEmail());
+                userResponseForDataTrackingDTO.setDataTrackings(dataTrackingService.findByUserDeviceIdFromUserId(user.getUserId()));
+                user1List.add(userResponseForDataTrackingDTO);
+            }
+            deviceResponse.setUserResponseForDataTrackingDTOList(user1List);
+            deviceList.add(deviceResponse);
+        }
+        SearchListResult<?> result = new SearchListResult<>(deviceList);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 
     @GetMapping("/data-trackings/{dataTrackingId}")
     public ResponseEntity<?> getDataTrackingById(@PathVariable UUID dataTrackingId) {
