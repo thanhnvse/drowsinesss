@@ -1,6 +1,5 @@
 package com.drowsiness.service.impl;
 
-import com.drowsiness.model.Device;
 import com.drowsiness.model.User;
 import com.drowsiness.model.UserDevice;
 import com.drowsiness.repository.UserDeviceRepository;
@@ -52,6 +51,11 @@ public class UserDeviceServiceImpl implements UserDeviceService{
     }
 
     @Override
+    public List<User> findUserByDeviceId(UUID deviceId) {
+        return userDeviceRepository.findUserByDeviceId(deviceId);
+    }
+
+    @Override
     public UserDevice findUserDeviceByUserDeviceId(UUID id) {
         return userDeviceRepository.findById(id).get();
     }
@@ -64,5 +68,10 @@ public class UserDeviceServiceImpl implements UserDeviceService{
     @Override
     public void removeUserDevice(UserDevice userDevice) {
         userDeviceRepository.delete(userDevice);
+    }
+
+    @Override
+    public List<UserDevice> findUserDeviceByDeviceId(UUID deviceId) {
+        return userDeviceRepository.findUserDeviceByDeviceId(deviceId);
     }
 }

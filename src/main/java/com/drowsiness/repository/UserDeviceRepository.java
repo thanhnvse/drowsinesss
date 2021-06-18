@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -23,4 +24,10 @@ public interface UserDeviceRepository extends JpaRepository<UserDevice, UUID> {
 
     @Query("SELECT case WHEN (count(ud) > 0)  then true else false end FROM UserDevice ud WHERE ud.accountUser.userId = :userId AND ud.device.deviceId = :deviceId")
     boolean existsByUserDeviceId(@Param("userId") UUID userId, @Param("deviceId") UUID deviceId);
+
+    @Query("SELECT ud.accountUser FROM UserDevice ud WHERE ud.device.deviceId = :deviceId")
+    List<User> findUserByDeviceId(@Param("deviceId") UUID deviceId);
+
+    @Query("SELECT ud FROM UserDevice ud WHERE ud.device.deviceId = :deviceId")
+    List<UserDevice> findUserDeviceByDeviceId(@Param("deviceId") UUID deviceId);
 }

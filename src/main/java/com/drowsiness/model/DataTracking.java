@@ -1,9 +1,8 @@
 package com.drowsiness.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -28,6 +27,7 @@ public class DataTracking implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_device_id")
     @JsonBackReference
+    @JsonIgnore
     private UserDevice userDevice;
 
     public DataTracking() {

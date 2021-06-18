@@ -1,5 +1,8 @@
-package com.drowsiness.filter;
+package com.drowsiness.configuration;
 
+import com.drowsiness.filter.JwtAuthEntryPoint;
+import com.drowsiness.filter.JwtAuthTokenFilter;
+import com.drowsiness.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,11 +60,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .authorizeRequests().antMatchers(
+                        "/api/auth/**",     //login, signup
+                        "/api/v1/**",     //login, signup
+                "/v2/api-docs",           // swagger
+                "/webjars/**",            // swagger-ui webjars
+                "/swagger-resources/**",  // swagger-ui resources
+                "/configuration/**",      // swagger configuration
+                "/*.html").permitAll()
+                .anyRequest().authenticated()
+                .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeRequests().antMatchers("/api/auth/**").permitAll()
-                .anyRequest().authenticated();
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.headers().cacheControl();
     }
 }

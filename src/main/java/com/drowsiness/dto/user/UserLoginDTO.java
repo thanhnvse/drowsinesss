@@ -1,4 +1,4 @@
-package com.drowsiness.filter;
+package com.drowsiness.dto.user;
 
 import lombok.Data;
 
