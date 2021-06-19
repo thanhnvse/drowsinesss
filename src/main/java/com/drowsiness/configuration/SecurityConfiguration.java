@@ -1,5 +1,6 @@
 package com.drowsiness.configuration;
 
+import com.drowsiness.filter.HttpsEnforcer;
 import com.drowsiness.filter.JwtAuthEntryPoint;
 import com.drowsiness.filter.JwtAuthTokenFilter;
 import com.drowsiness.service.impl.UserDetailsServiceImpl;
@@ -15,6 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
@@ -85,9 +88,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        http.requiresChannel().requestMatchers(r -> r.getHeader("X-Forwarded-Proto") !=null).requiresSecure();
 //        http.headers().cacheControl();
     }
-//
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers("/**");
-//    }
+
+    @Bean
+    public Filter httpsEnforcerFilter(){
+        return new HttpsEnforcer();
+    }
+    
 }
