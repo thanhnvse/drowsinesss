@@ -64,20 +64,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().formLogin().disable().httpBasic().disable()
+        http.cors().and().csrf().disable()
                 .authorizeRequests()
                 .antMatchers(
                         "/api/auth/**",            //login, signup
-                                    "/api/v1/roles",            //create role
+                                    "/api/v1/roles",          //create role
                                     "/v2/api-docs",           // swagger
                                     "/webjars/**",            // swagger-ui webjars
                                     "/swagger-resources/**",  // swagger-ui resources
                                     "/configuration/**",      // swagger configuration
                                     "/*.html"
                         )
-                .permitAll();
-
-        http.authorizeRequests().anyRequest().authenticated()
+                .permitAll().anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
