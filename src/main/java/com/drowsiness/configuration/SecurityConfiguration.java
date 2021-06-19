@@ -18,6 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+//@EnableGlobalMethodSecurity(
+//        securedEnabled = true,
+//        jsr250Enabled = true,
+//        prePostEnabled = true
+//)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     UserDetailsServiceImpl userDetailsService;
@@ -59,20 +64,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests().antMatchers(
-                        "/api/auth/**",     //login, signup
-                "/v2/api-docs",           // swagger
-                "/webjars/**",            // swagger-ui webjars
-                "/swagger-resources/**",  // swagger-ui resources
-                "/configuration/**",      // swagger configuration
-                "/*.html").permitAll()
-                .anyRequest().authenticated()
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers(
+                        "/api/auth/**",            //login, signup
+                                    "/api/v1/roles",          //create role
+                                    "/v2/api-docs",           // swagger
+                                    "/webjars/**",            // swagger-ui webjars
+                                    "/swagger-resources/**",  // swagger-ui resources
+                                    "/configuration/**",      // swagger configuration
+                                    "/*.html"
+                        )
+                .permitAll().anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.headers().cacheControl();
+//        http.requiresChannel().requestMatchers(r -> r.getHeader("X-Forwarded-Proto") !=null).requiresSecure();
+//        http.headers().cacheControl();
     }
 }
