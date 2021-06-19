@@ -68,6 +68,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/api/auth/**",            //login, signup
+                                    "/api/v1/roles",            //create role
                                     "/v2/api-docs",           // swagger
                                     "/webjars/**",            // swagger-ui webjars
                                     "/swagger-resources/**",  // swagger-ui resources
