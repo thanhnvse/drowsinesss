@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +142,25 @@ public class DataTrackingController {
 
     @PostMapping("/data-trackings")
     public ResponseEntity<?> createDataTracking(@RequestBody DataTrackingCreateDTO dataTrackingCreateDTO) {
+        DataTracking dataTracking = new DataTracking();
+        dataTracking.setUserDevice(userDeviceService.findByUserIdAndDeviceId
+                (dataTrackingCreateDTO.getUserId(),dataTrackingCreateDTO.getDeviceId()));
+        dataTracking.setImageUrl(dataTrackingCreateDTO.getImageUrl());
+        dataTracking.setTrackingAt(StaticFuntion.getDate());
+        dataTracking.setDeleted(false);
+
+        dataTrackingService.saveDataTracking(dataTracking);
+
+        DataTrackingResponseDTO dataTrackingResponseDTO = new DataTrackingResponseDTO();
+        dataTrackingResponseDTO.setUser(userService.findUserByUserId(dataTrackingCreateDTO.getUserId()));
+        dataTrackingResponseDTO.setDevice(deviceService.findDeviceByDeviceId(dataTrackingCreateDTO.getDeviceId()));
+
+        ApiResult<?> apiResult = new ApiResult<>(dataTrackingResponseDTO,"Your data tracking has been created successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+    }
+
+    @PostMapping("/data-trackings/image")
+    public ResponseEntity<?> createDataTrackingWithImage(@RequestBody DataTrackingCreateDTO dataTrackingCreateDTO, @RequestParam(name = "file") MultipartFile file) {
         DataTracking dataTracking = new DataTracking();
         dataTracking.setUserDevice(userDeviceService.findByUserIdAndDeviceId
                 (dataTrackingCreateDTO.getUserId(),dataTrackingCreateDTO.getDeviceId()));

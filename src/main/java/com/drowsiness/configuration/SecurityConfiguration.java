@@ -1,6 +1,5 @@
 package com.drowsiness.configuration;
 
-import com.drowsiness.filter.HttpsEnforcer;
 import com.drowsiness.filter.JwtAuthEntryPoint;
 import com.drowsiness.filter.JwtAuthTokenFilter;
 import com.drowsiness.service.impl.UserDetailsServiceImpl;
@@ -16,8 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-import javax.servlet.Filter;
 
 @Configuration
 @EnableWebSecurity
@@ -67,18 +64,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and().csrf().disable().formLogin().disable().httpBasic().disable()
                 .authorizeRequests()
                 .antMatchers(
-                        "/api/auth/login",  //login, signup
-                "/v2/api-docs",           // swagger
-                "/webjars/**",            // swagger-ui webjars
-                "/swagger-resources/**",  // swagger-ui resources
-                "/configuration/**",      // swagger configuration
-                "/*.html"
-        )
-                .permitAll()
-                .anyRequest().authenticated()
+                        "/api/auth/**",            //login, signup
+                                    "/v2/api-docs",           // swagger
+                                    "/webjars/**",            // swagger-ui webjars
+                                    "/swagger-resources/**",  // swagger-ui resources
+                                    "/configuration/**",      // swagger configuration
+                                    "/*.html"
+                        )
+                .permitAll();
+
+        http.authorizeRequests().anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -87,10 +85,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        http.requiresChannel().requestMatchers(r -> r.getHeader("X-Forwarded-Proto") !=null).requiresSecure();
 //        http.headers().cacheControl();
     }
-
-    @Bean
-    public Filter httpsEnforcerFilter(){
-        return new HttpsEnforcer();
-    }
-
 }
