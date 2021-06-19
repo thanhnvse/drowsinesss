@@ -3,10 +3,7 @@ package com.drowsiness.controller;
 import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
-import com.drowsiness.dto.userdevice.UserDeviceConnectedResponseDTO;
-import com.drowsiness.dto.userdevice.UserDeviceCreateDTO;
-import com.drowsiness.dto.userdevice.UserDeviceHistoryDTO;
-import com.drowsiness.dto.userdevice.UserDeviceUpdateDTO;
+import com.drowsiness.dto.userdevice.*;
 import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.User;
 import com.drowsiness.model.UserDevice;
@@ -85,6 +82,13 @@ public class UserDeviceController {
         }
         SearchListResult<?> result = new SearchListResult<>(userDeviceHistoryDTOS);
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/user-devices/{userId}/user/{deviceId}/device")
+    public ResponseEntity<?> getInformationUserAndDeviceConnected(@PathVariable UUID userId, @PathVariable UUID deviceId) {
+        UserDevice userDevice = userDeviceService.findByUserIdAndDeviceId(userId, deviceId);
+        UserDeviceResponseDTO userDeviceResponseDTO = modelMapper.map(userDevice,UserDeviceResponseDTO.class);
+        return ResponseEntity.status(HttpStatus.OK).body(userDeviceResponseDTO);
     }
 
     @PostMapping("/user-devices")
