@@ -85,7 +85,7 @@ public class DataTrackingController {
     }
 
     //for admin
-    @GetMapping("/devices/data-trackings")
+    @GetMapping("/devices/users/data-trackings")
     public ResponseEntity<?> getDataTrackingsByDevices() {
         List<DeviceResponseForDataTrackingDTO> deviceList = new ArrayList<>();
         List<Device> devices = deviceService.findAllDevice();

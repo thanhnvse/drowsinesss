@@ -30,4 +30,7 @@ public interface UserDeviceRepository extends JpaRepository<UserDevice, UUID> {
 
     @Query("SELECT ud FROM UserDevice ud WHERE ud.device.deviceId = :deviceId")
     List<UserDevice> findUserDeviceByDeviceId(@Param("deviceId") UUID deviceId);
+
+    @Query("SELECT ud FROM UserDevice ud WHERE ud.accountUser.userId = :userId")
+    List<UserDevice> findAllDeviceConnectedByUserId(@Param("userId") UUID userId);
 }
