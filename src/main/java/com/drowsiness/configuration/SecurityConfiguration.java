@@ -69,15 +69,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-//                .antMatchers(
-//                        "/api/auth/login",  //login, signup
-//                "/v2/api-docs",           // swagger
-//                "/webjars/**",            // swagger-ui webjars
-//                "/swagger-resources/**",  // swagger-ui resources
-//                "/configuration/**",      // swagger configuration
-//                "/*.html"
-//        )
-                .antMatchers("/**")
+                .antMatchers(
+                        "/api/auth/login",  //login, signup
+                "/v2/api-docs",           // swagger
+                "/webjars/**",            // swagger-ui webjars
+                "/swagger-resources/**",  // swagger-ui resources
+                "/configuration/**",      // swagger configuration
+                "/*.html"
+        )
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -93,5 +92,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public Filter httpsEnforcerFilter(){
         return new HttpsEnforcer();
     }
-    
+
 }
