@@ -3,11 +3,9 @@ package com.drowsiness.controller;
 import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
-import com.drowsiness.dto.user.UserCreateDTO;
-import com.drowsiness.dto.user.UserResponseDTO;
-import com.drowsiness.dto.user.UserUpdateDTO;
 import com.drowsiness.dto.userdevice.UserDeviceConnectedResponseDTO;
 import com.drowsiness.dto.userdevice.UserDeviceCreateDTO;
+import com.drowsiness.dto.userdevice.UserDeviceHistoryDTO;
 import com.drowsiness.dto.userdevice.UserDeviceUpdateDTO;
 import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.User;
@@ -22,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -67,6 +66,24 @@ public class UserDeviceController {
         SearchResult<?> result = !user.equals(Optional.empty())
                 ? new SearchResult<>(user) : new SearchResult<>();
 
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/user-devices/{userId}/user/history")
+    public ResponseEntity<?> getUserHistoryConnected(@PathVariable UUID userId) {
+        List<UserDevice> userDeviceList = userDeviceService.findAllDeviceConnectedByUserId(userId);
+        List<UserDeviceHistoryDTO> userDeviceHistoryDTOS = new ArrayList<>();
+        for(UserDevice userDevice : userDeviceList){
+            UserDeviceHistoryDTO userDeviceHistoryDTO = new UserDeviceHistoryDTO();
+            userDeviceHistoryDTO.setDeviceId(userDevice.getDevice().getDeviceId());
+            userDeviceHistoryDTO.setDeviceName(userDevice.getDevice().getDeviceName());
+            userDeviceHistoryDTO.setCreatedAt(userDevice.getDevice().getCreatedAt());
+            userDeviceHistoryDTO.setConnected(userDevice.isConnected());
+            userDeviceHistoryDTO.setConnectedAt(userDevice.getConnectedAt());
+            userDeviceHistoryDTO.setDisconnectedAt(userDevice.getDisconnectedAt());
+            userDeviceHistoryDTOS.add(userDeviceHistoryDTO);
+        }
+        SearchListResult<?> result = new SearchListResult<>(userDeviceHistoryDTOS);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

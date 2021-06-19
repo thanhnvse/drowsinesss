@@ -19,4 +19,5 @@ public interface UserDeviceService {
     UserDevice saveUserDevice(UserDevice userDevice);
     void removeUserDevice(UserDevice userDevice);
     List<UserDevice> findUserDeviceByDeviceId(UUID deviceId);
+    List<UserDevice> findAllDeviceConnectedByUserId(UUID userId);
 }
