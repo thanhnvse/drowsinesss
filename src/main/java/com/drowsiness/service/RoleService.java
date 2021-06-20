@@ -12,6 +12,7 @@ public interface RoleService {
     Optional<Role> findRoleById(UUID id);
     Role findRoleByRoleName(String roleName);
     Role findRoleByRoleId(UUID id);
+    Role findRoleByUsername(String username);
     Role saveRole(Role role);
     void removeRole(Role role);
 }

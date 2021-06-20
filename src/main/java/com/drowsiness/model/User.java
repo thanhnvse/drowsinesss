@@ -64,4 +64,17 @@ public class User implements Serializable {
         this.role = role;
         this.phoneNumber = phoneNumber;
     }
+
+    public User(UUID userId, String username, String fullName, String password, String phoneNumber, String email, String avatar, boolean isActive, Long createdAt, Long updatedAt) {
+        this.userId = userId;
+        this.username = username;
+        this.fullName = fullName;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.avatar = avatar;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
