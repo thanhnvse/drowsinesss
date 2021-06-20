@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class UserController {
     private UserService userService;
     private RoleService roleService;
     private ModelMapper modelMapper;
-//    private PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -48,10 +49,10 @@ public class UserController {
         this.modelMapper = modelMapper;
     }
 
-//    @Autowired
-//    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-//        this.passwordEncoder = passwordEncoder;
-//    }
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
@@ -72,8 +73,8 @@ public class UserController {
     @PostMapping("/users")
     public ResponseEntity<?> createUser(@RequestBody UserCreateDTO userDTO) {
         User reqUser = modelMapper.map(userDTO, User.class);
-//        reqUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        reqUser.setPassword(userDTO.getPassword());
+        reqUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+//        reqUser.setPassword(userDTO.getPassword());
         reqUser.setActive(true);
         reqUser.setCreatedAt(StaticFuntion.getDate());
         reqUser.setPhoneNumber(userDTO.getPhoneNumber());
@@ -90,8 +91,8 @@ public class UserController {
         return userService.findUserById(userId).map(user -> {
             user.setUsername(userRequest.getUsername());
             user.setFullName(userRequest.getFullName());
-//            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-            user.setPassword(userRequest.getPassword());
+            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+//            user.setPassword(userRequest.getPassword());
             user.setEmail(userRequest.getEmail());
             user.setActive(userRequest.isActive());
             user.setAvatar(userRequest.getAvatar());
