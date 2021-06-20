@@ -21,7 +21,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -85,6 +88,16 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO userDTO) {
+        User createdUser = userService.login(userDTO.getUsername(), userDTO.getPassword());
+        if(createdUser == null){
+            if(userService.findUserByUsername(userDTO.getUsername()) != null){
+                ApiResult<?> apiResult = new ApiResult<>("Your password account is incorrect");
+                return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+            }
+            ApiResult<?> apiResult = new ApiResult<>("Your account doesn't sign up before");
+            return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+        }
+        //success
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userDTO.getUsername(),
@@ -95,21 +108,16 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = jwtProvider.generateJwtToken(authentication);
-        return ResponseEntity.ok(new JwtResponse(jwt));
 
+        User res = userService.findUserByUsername(userDTO.getUsername());
+        JwtResponse jwtResponse = new JwtResponse(res.getUserId(), res.getUsername(), res.getFullName(),
+                res.getPassword(), res.getPhoneNumber(), res.getEmail(), res.getAvatar(),
+        res.isActive(), res.getCreatedAt(), res.getUpdatedAt(), jwt);
 
-//        User createdUser = userService.login(userDTO.getUsername(),userDTO.getPassword());
-//        if(createdUser == null){
-//            if(userService.findUserByUsername(userDTO.getUsername()) != null){
-//                ApiResult<?> apiResult = new ApiResult<>("Your password account is incorrect");
-//                return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
-//            }
-//            ApiResult<?> apiResult = new ApiResult<>("Your account doesn't sign up before");
-//            return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
-//        }
+//        return ResponseEntity.ok(new JwtResponse(jwt));
 //        UserResponseDTO userResponseDTO = modelMapper.map(createdUser, UserResponseDTO.class);
-//        ApiResult<?> apiResult = new ApiResult<>(userResponseDTO,"Your account has been signed in successfully");
-//        return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+        ApiResult<?> apiResult = new ApiResult<>(jwtResponse,"Your account has been signed in successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
 
     @PostMapping("/signup")
