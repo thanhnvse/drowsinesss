@@ -66,8 +66,13 @@ public class DataTrackingController {
 
     @GetMapping("/data-trackings")
     public ResponseEntity<?> getAllDataTrackings() {
+        List<DataTrackingResponseForUserAndDeviceDTO> dataTrackingResponseForUserAndDeviceDTOS = new ArrayList<>();
         List<DataTracking> dataTrackingList = dataTrackingService.findAllDataTracking();
-        SearchListResult<?> result = new SearchListResult<>(dataTrackingList);
+        for(DataTracking dataTracking : dataTrackingList){
+            DataTrackingResponseForUserAndDeviceDTO dataTrackingResponseForUserAndDeviceDTO = modelMapper.map(dataTracking,DataTrackingResponseForUserAndDeviceDTO.class);
+            dataTrackingResponseForUserAndDeviceDTOS.add(dataTrackingResponseForUserAndDeviceDTO);
+        }
+        SearchListResult<?> result = new SearchListResult<>(dataTrackingResponseForUserAndDeviceDTOS);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -135,7 +140,7 @@ public class DataTrackingController {
     public ResponseEntity<?> getDataTrackingById(@PathVariable UUID dataTrackingId) {
         Optional<DataTracking> searchDataTracking = dataTrackingService.findDataTrackingById(dataTrackingId);
         SearchResult<?> result = !searchDataTracking.equals(Optional.empty())
-                ? new SearchResult<>(searchDataTracking.get()): new SearchResult<>();
+                ? new SearchResult<>(modelMapper.map(searchDataTracking.get(),DataTrackingResponseForUserAndDeviceDTO.class)): new SearchResult<>();
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
