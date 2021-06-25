@@ -89,9 +89,10 @@ public class UserController {
     @PutMapping("/users/{userId}")
     public ResponseEntity<?> updateUser(@PathVariable UUID userId, @RequestBody UserUpdateDTO userRequest) {
         return userService.findUserById(userId).map(user -> {
-            user.setUsername(userRequest.getUsername());
             user.setFullName(userRequest.getFullName());
-            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            if(userRequest.getPassword()!=null){
+                user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            }
 //            user.setPassword(userRequest.getPassword());
             user.setEmail(userRequest.getEmail());
             user.setActive(userRequest.isActive());
