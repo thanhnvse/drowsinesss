@@ -11,10 +11,7 @@ import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.DataTracking;
 import com.drowsiness.model.Device;
 import com.drowsiness.model.User;
-import com.drowsiness.service.DataTrackingService;
-import com.drowsiness.service.DeviceService;
-import com.drowsiness.service.UserDeviceService;
-import com.drowsiness.service.UserService;
+import com.drowsiness.service.*;
 import com.drowsiness.utils.StaticFuntion;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +20,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -35,6 +34,7 @@ public class DataTrackingController {
     private UserService userService;
     private DeviceService deviceService;
     private UserDeviceService userDeviceService;
+    private FileService fileService;
     private ModelMapper modelMapper;
 
     @Autowired
@@ -55,6 +55,11 @@ public class DataTrackingController {
     @Autowired
     public void setUserDeviceService(UserDeviceService userDeviceService) {
         this.userDeviceService = userDeviceService;
+    }
+
+    @Autowired
+    public void setFileService(FileService fileService) {
+        this.fileService = fileService;
     }
 
     @Autowired
@@ -213,23 +218,33 @@ public class DataTrackingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
 
-    @PostMapping("/data-trackings/image")
-    public ResponseEntity<?> createDataTrackingWithImage(@RequestBody DataTrackingCreateDTO dataTrackingCreateDTO, @RequestParam(name = "file") MultipartFile file) {
+    @PostMapping("/data-trackings/users/{userId}/devices/{deviceId}/image")
+    public ResponseEntity<?> createDataTrackingWithImage(@PathVariable UUID userId, @PathVariable UUID deviceId, @RequestParam(name = "file") MultipartFile multipartFile) throws InterruptedException, ExecutionException, IOException {
         DataTracking dataTracking = new DataTracking();
         dataTracking.setUserDevice(userDeviceService.findByUserIdAndDeviceId
-                (dataTrackingCreateDTO.getUserId(),dataTrackingCreateDTO.getDeviceId()));
-        dataTracking.setImageUrl(dataTrackingCreateDTO.getImageUrl());
+                (userId,deviceId));
+        dataTracking.setImageUrl(fileService.getImgUrl(multipartFile));
         dataTracking.setTrackingAt(StaticFuntion.getDate());
         dataTracking.setDeleted(false);
 
         dataTrackingService.saveDataTracking(dataTracking);
 
         DataTrackingResponseDTO dataTrackingResponseDTO = new DataTrackingResponseDTO();
-        dataTrackingResponseDTO.setUser(userService.findUserByUserId(dataTrackingCreateDTO.getUserId()));
-        dataTrackingResponseDTO.setDevice(deviceService.findDeviceByDeviceId(dataTrackingCreateDTO.getDeviceId()));
+        dataTrackingResponseDTO.setUser(userService.findUserByUserId(userId));
+        dataTrackingResponseDTO.setDevice(deviceService.findDeviceByDeviceId(deviceId));
 
         ApiResult<?> apiResult = new ApiResult<>(dataTrackingResponseDTO,"Your data tracking has been created successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+    }
+
+    //@PostMapping("/data-trackings/pic")
+    public Object upload(@RequestParam("file") MultipartFile multipartFile) throws Exception{
+        return fileService.upload(multipartFile);
+    }
+
+    //@PostMapping(value = "/data-trackings/pic/{fileName:.+}")
+    public Object download(@PathVariable String fileName) throws IOException {
+        return fileService.download(fileName);
     }
 
     @PutMapping("/data-trackings/{dataTrackingId}")

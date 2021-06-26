@@ -107,7 +107,7 @@
             <artifactId>firebase-admin</artifactId>
             <version>7.0.1</version>
         </dependency>
-<!--        <dependency>-->
+        <!--        <dependency>-->
 <!--            <groupId>javax.servlet</groupId>-->
 <!--            <artifactId>javax.servlet-api</artifactId>-->
 <!--            <scope>provided</scope>-->
@@ -127,6 +127,14 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>10</source>
+                    <target>10</target>
                 </configuration>
             </plugin>
         </plugins>
