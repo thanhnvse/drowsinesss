@@ -40,6 +40,11 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    public List<Device> findAllDeviceByUserId(UUID userId) {
+        return deviceRepository.findByUseId(userId);
+    }
+
+    @Override
     public void removeDevice(Device device) {
         deviceRepository.delete(device);
     }

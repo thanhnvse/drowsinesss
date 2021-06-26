@@ -11,5 +11,6 @@ public interface DeviceService {
     Optional<Device> findDeviceById(UUID id);
     Device findDeviceByDeviceId(UUID id);
     Device saveDevice(Device device);
+    List<Device> findAllDeviceByUserId(UUID userId);
     void removeDevice(Device device);
 }
