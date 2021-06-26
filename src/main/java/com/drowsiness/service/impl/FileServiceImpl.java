@@ -12,8 +12,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -40,7 +38,8 @@ public class FileServiceImpl implements FileService {
 //        String customToken = FirebaseAuth.getInstance().createCustomTokenAsync(UID).get();
 //        System.out.println(customToken);
 
-        return String.format("https://firebasestorage.googleapis.com/v0/b/drowsiness-316609.appspot.com/o/%s?alt=media", URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+//        return String.format("https://firebasestorage.googleapis.com/v0/b/drowsiness-316609.appspot.com/o/%s?alt=media", URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+        return String.format("https://firebasestorage.googleapis.com/v0/b/drowsiness-316609.appspot.com/o/%s?alt=media", fileName);
     }
 
     @Override
