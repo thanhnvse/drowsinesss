@@ -24,7 +24,7 @@ public class FileServiceImpl implements FileService {
 //    private static final String UID = "some-uid";
 
     @Override
-    public String uploadFile(File file, String fileName) throws IOException, InterruptedException, ExecutionException {
+    public String uploadFile(File file, String fileName) throws IOException {
         BlobId blobId = BlobId.of("drowsiness-316609.appspot.com", fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/jpeg").build();
         Credentials credentials = GoogleCredentials.fromStream(
@@ -39,6 +39,7 @@ public class FileServiceImpl implements FileService {
 //        FirebaseApp.initializeApp(options);
 //        String customToken = FirebaseAuth.getInstance().createCustomTokenAsync(UID).get();
 //        System.out.println(customToken);
+
         return String.format("https://firebasestorage.googleapis.com/v0/b/drowsiness-316609.appspot.com/o/%s?alt=media", URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
 
