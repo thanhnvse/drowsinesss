@@ -1,9 +1,7 @@
 package com.drowsiness.controller;
 
-import com.drowsiness.dto.datatracking.DataTrackingCreateDTO;
-import com.drowsiness.dto.datatracking.DataTrackingResponseDTO;
-import com.drowsiness.dto.datatracking.DataTrackingResponseForUserAndDeviceDTO;
-import com.drowsiness.dto.datatracking.DataTrackingUpdateDTO;
+import com.drowsiness.dto.datatracking.*;
+import com.drowsiness.dto.device.DeviceResponseForDataTrackingByDeviceDTO;
 import com.drowsiness.dto.device.DeviceResponseForDataTrackingDTO;
 import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
@@ -79,7 +77,24 @@ public class DataTrackingController {
     @GetMapping("/data-trackings/users/{userId}/devices/{deviceId}")
     public ResponseEntity<?> getAllDataTrackingsByUserDeviceId(@PathVariable UUID userId, @PathVariable UUID deviceId) {
         List<DataTracking> dataTrackingList = dataTrackingService.findByUserDeviceIdFromUserIdAndDeviceId(userId,deviceId);
-        SearchListResult<?> result = new SearchListResult<>(dataTrackingList);
+        List<DataTrackingResponseForUserAndDeviceDTO> dataTrackingResponseForUserAndDeviceDTOList = new ArrayList<>();
+        for(DataTracking dto : dataTrackingList){
+            DataTrackingResponseForUserAndDeviceDTO dataTrackingResponse = modelMapper.map(dto,DataTrackingResponseForUserAndDeviceDTO.class);
+            dataTrackingResponseForUserAndDeviceDTOList.add(dataTrackingResponse);
+        }
+        SearchListResult<?> result = new SearchListResult<>(dataTrackingResponseForUserAndDeviceDTOList);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/data-trackings/users/{userId}/devices/{deviceId}/connected")
+    public ResponseEntity<?> getAllDataTrackingsByUserDeviceIdConnected(@PathVariable UUID userId, @PathVariable UUID deviceId) {
+        List<DataTracking> dataTrackingList = dataTrackingService.findByUserDeviceIdFromUserIdAndDeviceIdConnected(userId,deviceId);
+        List<DataTrackingResponseForUserAndDeviceDTO> dataTrackingResponseList = new ArrayList<>();
+        for(DataTracking dto : dataTrackingList){
+            DataTrackingResponseForUserAndDeviceDTO dataTrackingResponse = modelMapper.map(dto,DataTrackingResponseForUserAndDeviceDTO.class);
+            dataTrackingResponseList.add(dataTrackingResponse);
+        }
+        SearchListResult<?> result = new SearchListResult<>(dataTrackingResponseList);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -139,10 +154,44 @@ public class DataTrackingController {
     @GetMapping("/data-trackings/{dataTrackingId}")
     public ResponseEntity<?> getDataTrackingById(@PathVariable UUID dataTrackingId) {
         Optional<DataTracking> searchDataTracking = dataTrackingService.findDataTrackingById(dataTrackingId);
-        SearchResult<?> result = !searchDataTracking.equals(Optional.empty())
-                ? new SearchResult<>(modelMapper.map(searchDataTracking.get(),DataTrackingResponseForUserAndDeviceDTO.class)): new SearchResult<>();
-
+        SearchResult<?> result = new SearchResult<>();
+        if(!searchDataTracking.equals(Optional.empty())){
+            DataTrackingResponseWithDevice dataTrackingResponseWithDevice = new DataTrackingResponseWithDevice();
+            dataTrackingResponseWithDevice.setDataTrackingId(dataTrackingId);
+            dataTrackingResponseWithDevice.setDeleted(searchDataTracking.get().isDeleted());
+            dataTrackingResponseWithDevice.setImageUrl(searchDataTracking.get().getImageUrl());
+            dataTrackingResponseWithDevice.setTrackingAt(searchDataTracking.get().getTrackingAt());
+            dataTrackingResponseWithDevice.setDeviceId(dataTrackingService.findDataTrackingByDataTrackingId(dataTrackingId).getUserDevice().getDevice().getDeviceId());
+            result = new SearchResult<>(dataTrackingResponseWithDevice);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        }
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/data-trackings/users/{userId}")
+    public ResponseEntity<?> getDataTrackingByUserId(@PathVariable UUID userId) {
+
+        List<Device> searchDevices = deviceService.findAllDeviceByUserId(userId);
+        if(searchDevices.isEmpty()){
+            return ResponseEntity.status(HttpStatus.OK).body(new SearchResult<>());
+        }
+        List<DataTrackingResponseByDeviceDTO> dataList = new ArrayList<>();
+        for(Device device: searchDevices){
+            DeviceResponseForDataTrackingByDeviceDTO deviceDTO = modelMapper.map(device,DeviceResponseForDataTrackingByDeviceDTO.class);
+            List<DataTracking> dataTrackings = dataTrackingService.findByUserDeviceIdFromUserIdAndDeviceId(userId,device.getDeviceId());
+            List<DataTrackingResponseWithDevice> dataTrackingResponseWithDevices = new ArrayList<>();
+            for(DataTracking dataTracking : dataTrackings){
+                DataTrackingResponseWithDevice dataTrackingResponseWithDevice = new DataTrackingResponseWithDevice();
+                dataTrackingResponseWithDevice.setDataTrackingId(dataTracking.getDataTrackingId());
+                dataTrackingResponseWithDevice.setTrackingAt(dataTracking.getTrackingAt());
+                dataTrackingResponseWithDevice.setImageUrl(dataTracking.getImageUrl());
+                dataTrackingResponseWithDevice.setDeleted(dataTracking.isDeleted());
+                dataTrackingResponseWithDevices.add(dataTrackingResponseWithDevice);
+            }
+            DataTrackingResponseByDeviceDTO dataTrackingResponseByDeviceDTO = new DataTrackingResponseByDeviceDTO(deviceDTO,dataTrackingResponseWithDevices);
+            dataList.add(dataTrackingResponseByDeviceDTO);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(dataList);
     }
 
     @PostMapping("/data-trackings")
