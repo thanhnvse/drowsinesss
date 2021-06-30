@@ -111,21 +111,5 @@ public class UserController {
         }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
     }
 
-//    @PostMapping("/login/{username}/{password}")
-//    public ResponseEntity<?> login(@PathVariable String username, @PathVariable String password) {
-//
-//        User createdUser = userService.login(username,password);
-//        if(createdUser == null){
-//            if(userService.findUserByUsername(username) != null){
-//                ApiResult<?> apiResult = new ApiResult<>("Your password account is incorrect");
-//                return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
-//            }
-//            ApiResult<?> apiResult = new ApiResult<>("Your account doesn't sign up before");
-//            return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
-//        }
-//        UserResponseDTO userResponseDTO = modelMapper.map(createdUser, UserResponseDTO.class);
-//        ApiResult<?> apiResult = new ApiResult<>(userResponseDTO,"Your account has been signed in successfully");
-//        return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
-//    }
     
 }

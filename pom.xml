@@ -107,11 +107,6 @@
             <artifactId>firebase-admin</artifactId>
             <version>7.0.1</version>
         </dependency>
-        <!--        <dependency>-->
-<!--            <groupId>javax.servlet</groupId>-->
-<!--            <artifactId>javax.servlet-api</artifactId>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
 
     </dependencies>
 
@@ -129,32 +124,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <source>10</source>-->
-<!--                    <target>10</target>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-compiler-plugin</artifactId>-->
-<!--                <version>3.7.0</version>-->
-<!--                <configuration>-->
-<!--                    <release>10</release>-->
-<!--                    <source>10</source>-->
-<!--                    <target>10</target>-->
-<!--                </configuration>-->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--                        <groupId>org.ow2.asm</groupId>-->
-<!--                        <artifactId>asm</artifactId>-->
-<!--                        <version>6.2</version> &lt;!&ndash; Use newer version of ASM &ndash;&gt;-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 
