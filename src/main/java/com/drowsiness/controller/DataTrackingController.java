@@ -218,20 +218,24 @@ public class DataTrackingController {
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
 
-    @PostMapping("/data-trackings/users/{userId}/devices/{deviceId}/image")
-    public ResponseEntity<?> createDataTrackingWithImage(@PathVariable UUID userId, @PathVariable UUID deviceId, @RequestParam(name = "file") MultipartFile multipartFile) throws InterruptedException, ExecutionException, IOException {
+    @PostMapping("/data-trackings/users/devices/image")
+    public ResponseEntity<?> createDataTrackingWithImage(@ModelAttribute DataTrackingCreateImageDTO dataTrackingCreateDTO) throws InterruptedException, ExecutionException, IOException {
         DataTracking dataTracking = new DataTracking();
         dataTracking.setUserDevice(userDeviceService.findByUserIdAndDeviceId
-                (userId,deviceId));
-        dataTracking.setImageUrl(fileService.getImgUrl(multipartFile));
-        dataTracking.setTrackingAt(StaticFuntion.getDate());
+                (dataTrackingCreateDTO.getUserId(),dataTrackingCreateDTO.getDeviceId()));
+        dataTracking.setImageUrl(fileService.getImgUrl(dataTrackingCreateDTO.getFile()));
+        if(dataTrackingCreateDTO.getTrackingAt() == null){
+            dataTracking.setTrackingAt(StaticFuntion.getDate());
+        }else{
+            dataTracking.setTrackingAt(dataTrackingCreateDTO.getTrackingAt());
+        }
         dataTracking.setDeleted(false);
 
         dataTrackingService.saveDataTracking(dataTracking);
 
         DataTrackingResponseDTO dataTrackingResponseDTO = new DataTrackingResponseDTO();
-        dataTrackingResponseDTO.setUser(userService.findUserByUserId(userId));
-        dataTrackingResponseDTO.setDevice(deviceService.findDeviceByDeviceId(deviceId));
+        dataTrackingResponseDTO.setUser(userService.findUserByUserId(dataTrackingCreateDTO.getUserId()));
+        dataTrackingResponseDTO.setDevice(deviceService.findDeviceByDeviceId(dataTrackingCreateDTO.getDeviceId()));
 
         ApiResult<?> apiResult = new ApiResult<>(dataTrackingResponseDTO,"Your data tracking has been created successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
