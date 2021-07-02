@@ -41,6 +41,7 @@ public class UserDevice implements Serializable {
     private Long disconnectedAt;
 
     @OneToMany(mappedBy = "userDevice", cascade = CascadeType.ALL)
+    @JsonBackReference
     private List<DataTracking> dataTrackings;
 
     public UserDevice() {

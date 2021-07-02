@@ -15,4 +15,5 @@ public interface DataTrackingService {
     List<DataTracking> findByUserDeviceIdFromUserIdAndDeviceIdConnected(UUID userId, UUID deviceId);
     List<DataTracking> findByUserDeviceIdFromUserIdAndDeviceId(UUID userId, UUID deviceId);
     List<DataTracking> findByUserDeviceIdFromUserId(UUID userId);
+    List<DataTracking> findByUserId(UUID userId);
 }

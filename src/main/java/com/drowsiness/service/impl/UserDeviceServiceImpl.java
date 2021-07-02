@@ -41,8 +41,8 @@ public class UserDeviceServiceImpl implements UserDeviceService{
     }
 
     @Override
-    public UserDevice findDeviceByUserDeviceConnected(UUID deviceId) {
-        return userDeviceRepository.findByDeviceIdAndAndConnected(deviceId);
+    public UserDevice findDeviceByUserDeviceConnected(UUID userId) {
+        return userDeviceRepository.findByDeviceIdAndAndConnected(userId);
     }
 
     @Override
@@ -78,5 +78,10 @@ public class UserDeviceServiceImpl implements UserDeviceService{
     @Override
     public List<UserDevice> findAllDeviceConnectedByUserId(UUID userId) {
         return userDeviceRepository.findAllDeviceConnectedByUserId(userId);
+    }
+
+    @Override
+    public UserDevice findByUserIdAndAndConnected(UUID userId) {
+        return userDeviceRepository.findByUserIdAndAndConnected(userId);
     }
 }

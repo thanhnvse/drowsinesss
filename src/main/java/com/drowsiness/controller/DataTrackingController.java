@@ -7,10 +7,12 @@ import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
 import com.drowsiness.dto.user.UserResponseForDataTrackingDTO;
+import com.drowsiness.dto.userdevice.UserDeviceHistoryDTO;
 import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.DataTracking;
 import com.drowsiness.model.Device;
 import com.drowsiness.model.User;
+import com.drowsiness.model.UserDevice;
 import com.drowsiness.service.*;
 import com.drowsiness.utils.StaticFuntion;
 import org.modelmapper.ModelMapper;
@@ -170,6 +172,24 @@ public class DataTrackingController {
             result = new SearchResult<>(dataTrackingResponseWithDevice);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         }
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @GetMapping("/data-trackings/user/{userId}")
+    public ResponseEntity<?> getByUserId(@PathVariable UUID userId) {
+        List<DataTracking> dataTrackingList = dataTrackingService.findByUserId(userId);
+        List<DataTrackingResponseWithDevice> dataTrackings = new ArrayList<>();
+        for(DataTracking dto : dataTrackingList){
+            DataTrackingResponseWithDevice d = new DataTrackingResponseWithDevice();
+            d.setDataTrackingId(dto.getDataTrackingId());
+            d.setDeleted(dto.isDeleted());
+            d.setImageUrl(dto.getImageUrl());
+            d.setTrackingAt(dto.getTrackingAt());
+            d.setDeviceId(dto.getUserDevice().getDevice().getDeviceId());
+
+            dataTrackings.add(d);
+        }
+        SearchListResult<?> result = new SearchListResult<>(dataTrackings);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

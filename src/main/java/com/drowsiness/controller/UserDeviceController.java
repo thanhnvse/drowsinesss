@@ -66,6 +66,15 @@ public class UserDeviceController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping("/user-devices/{userId}/userdevice")
+    public ResponseEntity<?> getUserDeviceConnectedByUserId(@PathVariable UUID userId) {
+        UserDevice userdevice = userDeviceService.findByUserIdAndAndConnected(userId);
+        SearchResult<?> result = !userdevice.equals(Optional.empty())
+                ? new SearchResult<>(userdevice) : new SearchResult<>();
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     @GetMapping("/user-devices/{userId}/user/history")
     public ResponseEntity<?> getUserHistoryConnected(@PathVariable UUID userId) {
         List<UserDevice> userDeviceList = userDeviceService.findAllDeviceConnectedByUserId(userId);
@@ -97,7 +106,7 @@ public class UserDeviceController {
 
         //check the last connected user in device
         //withdraw the last user
-        UserDevice userDevice = userDeviceService.findDeviceByUserDeviceConnected(userDeviceDTO.getDeviceId());
+        UserDevice userDevice = userDeviceService.findByUserIdAndAndConnected(userDeviceDTO.getUserId());
         if(userDevice != null){
             userDevice.setConnected(false);
             userDeviceService.saveUserDevice(userDevice);
