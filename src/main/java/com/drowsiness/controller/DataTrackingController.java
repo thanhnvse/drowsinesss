@@ -186,6 +186,7 @@ public class DataTrackingController {
             d.setImageUrl(dto.getImageUrl());
             d.setTrackingAt(dto.getTrackingAt());
             d.setDeviceId(dto.getUserDevice().getDevice().getDeviceId());
+            d.setDeviceName(dto.getUserDevice().getDevice().getDeviceName());
 
             dataTrackings.add(d);
         }
