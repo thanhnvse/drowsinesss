@@ -13,4 +13,5 @@ public interface DeviceService {
     Device saveDevice(Device device);
     List<Device> findAllDeviceByUserId(UUID userId);
     void removeDevice(Device device);
+    String getDeviceNameById(UUID id);
 }

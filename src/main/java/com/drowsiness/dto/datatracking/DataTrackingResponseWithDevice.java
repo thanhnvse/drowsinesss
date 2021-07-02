@@ -15,4 +15,6 @@ public class DataTrackingResponseWithDevice {
     private String imageUrl;
 
     private UUID deviceId;
+
+    private String deviceName;
 }

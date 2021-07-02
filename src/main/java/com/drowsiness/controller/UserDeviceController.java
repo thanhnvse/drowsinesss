@@ -1,5 +1,6 @@
 package com.drowsiness.controller;
 
+import com.drowsiness.dto.device.DeviceResponseDTO;
 import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
@@ -69,8 +70,12 @@ public class UserDeviceController {
     @GetMapping("/user-devices/{userId}/userdevice")
     public ResponseEntity<?> getUserDeviceConnectedByUserId(@PathVariable UUID userId) {
         UserDevice userdevice = userDeviceService.findByUserIdAndAndConnected(userId);
-        SearchResult<?> result = !userdevice.equals(Optional.empty())
-                ? new SearchResult<>(userdevice) : new SearchResult<>();
+        DeviceResponseDTO dto = new DeviceResponseDTO();
+        dto.setDeviceName(userdevice.getDevice().getDeviceName());
+        dto.setCreatedAt(userdevice.getConnectedAt());
+        dto.setUpdatedAt(userdevice.getUpdatedAt());
+        SearchResult<?> result = !dto.equals(Optional.empty())
+                ? new SearchResult<>(dto) : new SearchResult<>();
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }

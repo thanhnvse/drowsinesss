@@ -48,4 +48,10 @@ public class DeviceServiceImpl implements DeviceService {
     public void removeDevice(Device device) {
         deviceRepository.delete(device);
     }
+
+    @Override
+    public String getDeviceNameById(UUID id) {
+        return deviceRepository.findById(id).get().getDeviceName();
+
+    }
 }
