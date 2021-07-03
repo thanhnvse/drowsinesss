@@ -131,7 +131,7 @@ public class UserDeviceController {
         if(userDeviceService.checkExistedUser(userDeviceDTO.getUserId(),userDeviceDTO.getDeviceId())){
             UserDevice existedUser = userDeviceService.findByUserIdAndDeviceId(userDeviceDTO.getUserId(),userDeviceDTO.getDeviceId());
             existedUser.setConnected(true);
-            existedUser.setConnectedAt(new Date().getTime());
+            existedUser.setConnectedAt(StaticFuntion.getDate());
             UserDevice updateConnectedUserDevice = userDeviceService.saveUserDevice(existedUser);
             UserDeviceConnectedResponseDTO userDeviceUpdateResponseDTO = modelMapper.map(updateConnectedUserDevice, UserDeviceConnectedResponseDTO.class);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResult<>(userDeviceUpdateResponseDTO,"Your acccount has been connected with device"));
