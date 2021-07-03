@@ -109,12 +109,25 @@ public class UserDeviceController {
     public ResponseEntity<?> connectUserInDevice(@RequestBody UserDeviceCreateDTO userDeviceDTO) {
 //        UserDevice reqUserDevice = modelMapper.map(userDeviceDTO, UserDevice.class);
 
+        //withdraw the user is connecting the device
+        List<UserDevice> listUD = userDeviceService.findByDeviceID(userDeviceDTO.getDeviceId());
+        if(listUD != null){
+            for (UserDevice ud : listUD) {
+                ud.setConnected(false);
+                userDeviceService.saveUserDevice(ud);
+            }
+        }
+
         //check the last connected user in device
-        //withdraw the last user
-        UserDevice userDevice = userDeviceService.findByUserIdAndAndConnected(userDeviceDTO.getUserId());
-        if(userDevice != null){
-            userDevice.setConnected(false);
-            userDeviceService.saveUserDevice(userDevice);
+        //withdraw other device user connected in
+        listUD = userDeviceService.findByUserId(userDeviceDTO.getUserId());
+        if(listUD != null){
+
+            for (UserDevice ud : listUD) {
+                System.out.println(ud.getDevice().getDeviceId());
+                ud.setConnected(false);
+                userDeviceService.saveUserDevice(ud);
+            }
         }
 
         //check existed

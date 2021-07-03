@@ -21,4 +21,6 @@ public interface UserDeviceService {
     List<UserDevice> findUserDeviceByDeviceId(UUID deviceId);
     List<UserDevice> findAllDeviceConnectedByUserId(UUID userId);
     UserDevice findByUserIdAndAndConnected(UUID userId);
+    List<UserDevice> findByDeviceID(UUID deviceId);
+    List<UserDevice> findByUserId(UUID userId);
 }

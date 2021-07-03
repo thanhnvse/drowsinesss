@@ -84,4 +84,16 @@ public class UserDeviceServiceImpl implements UserDeviceService{
     public UserDevice findByUserIdAndAndConnected(UUID userId) {
         return userDeviceRepository.findByUserIdAndAndConnected(userId);
     }
+
+    @Override
+    public List<UserDevice> findByDeviceID(UUID deviceId) {
+        return userDeviceRepository.findByDeviceID(deviceId);
+    }
+
+    @Override
+    public List<UserDevice> findByUserId(UUID userId) {
+        return userDeviceRepository.findAllDeviceConnectedByUserId(userId);
+    }
+
+
 }
