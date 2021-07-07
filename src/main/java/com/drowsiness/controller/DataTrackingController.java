@@ -81,6 +81,30 @@ public class DataTrackingController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping("/data-trackings-infos")
+    public ResponseEntity<?> getAllDataTrackingsWithInfo() {
+        List<DataTrackingFullDTO> resultList = new ArrayList<>();
+        List<UserDevice> udList = userDeviceService.findAllUserDevice();
+        DataTrackingFullDTO dto;
+        for(UserDevice ud : udList){
+            for (DataTracking dt : ud.getDataTrackings()) {
+                dto = new DataTrackingFullDTO();
+                dto.setDataTrackingId(dt.getDataTrackingId());
+                dto.setTrackingAt(dt.getTrackingAt());
+                dto.setDeleted(dt.isDeleted());
+                dto.setImageUrl(dt.getImageUrl());
+
+                dto.setUserDeviceId(ud.getUserDeviceId());
+                dto.setUserId(ud.getAccountUser().getUserId());
+                dto.setDeviceId(ud.getDevice().getDeviceId());
+
+                resultList.add(dto);
+            }
+        }
+        SearchListResult<?> result = new SearchListResult<>(resultList);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     @GetMapping("/data-trackings/users/{userId}/devices/{deviceId}")
     public ResponseEntity<?> getAllDataTrackingsByUserDeviceId(@PathVariable UUID userId, @PathVariable UUID deviceId) {
         List<DataTracking> dataTrackingList = dataTrackingService.findByUserDeviceIdFromUserIdAndDeviceId(userId,deviceId);
