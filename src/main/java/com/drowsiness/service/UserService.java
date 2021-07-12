@@ -15,4 +15,5 @@ public interface UserService {
     User login(String username, String password);
     User findUserByUsername(String username);
     User findUserByEmail(String email);
+    List<User> findAllUserByAdminRole();
 }
