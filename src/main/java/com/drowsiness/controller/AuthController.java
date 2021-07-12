@@ -144,7 +144,7 @@ public class AuthController {
         User createdUser = userService.saveUser(reqUser);
 
         UserResponseDTO userResponseDTO = modelMapper.map(createdUser, UserResponseDTO.class);
-        ApiResult<?> apiResult = new ApiResult<>(userResponseDTO,"Your account has been registed successfully");
+        ApiResult<?> apiResult = new ApiResult<>(userResponseDTO,"Your account has been registered successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
 

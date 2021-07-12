@@ -61,6 +61,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping("/users/user")
+    public ResponseEntity<?> getAllUsersWithoutAdminRole() {
+        List<User> userList = userService.findAllUserByAdminRole();
+        SearchListResult<?> result = new SearchListResult<>(userList);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     @GetMapping("/users/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable UUID userId) {
         Optional<User> searchUser = userService.findUserById(userId);
