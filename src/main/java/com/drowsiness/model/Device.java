@@ -1,5 +1,6 @@
 package com.drowsiness.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
@@ -28,6 +29,14 @@ public class Device implements Serializable {
 
     @Column(name = "updated_at")
     private Long updatedAt;
+
+    @ManyToOne
+    @JoinColumn(
+            name = "firmware_id"
+    )
+    @JsonBackReference
+    @JsonIgnore
+    private Firmware firmware;
 
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)
     @JsonIgnore

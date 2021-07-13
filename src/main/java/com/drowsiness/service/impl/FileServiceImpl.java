@@ -5,6 +5,7 @@ import com.drowsiness.service.FileService;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
+import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -96,6 +97,24 @@ public class FileServiceImpl implements FileService {
 
         File file = this.convertToFile(multipartFile, fileName);                      // to convert multipartFile to File
         String TEMP_URL = this.uploadFile(file, fileName);                                   // to get uploaded file link
+        file.delete();
+        return TEMP_URL;
+    }
+
+    public String uploadZip(File file, String fileName) throws IOException, FirebaseAuthException, InterruptedException, ExecutionException {
+        BlobId blobId = BlobId.of("drowsiness-316609.appspot.com", fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("application/zip").build();
+        Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("src/main/resources/serviceAccountKey.json"));
+        Storage storage = (Storage)((StorageOptions.Builder)StorageOptions.newBuilder().setCredentials(credentials)).build().getService();
+        storage.create(blobInfo, Files.readAllBytes(file.toPath()), new Storage.BlobTargetOption[0]);
+        return String.format("https://firebasestorage.googleapis.com/v0/b/drowsiness-316609.appspot.com/o/%s?alt=media", fileName);
+    }
+
+    public String getZipUrl(MultipartFile multipartFile) throws IOException, ExecutionException, InterruptedException, FirebaseAuthException {
+        String fileName = multipartFile.getOriginalFilename();
+        fileName = UUID.randomUUID().toString().concat(this.getExtension(fileName));
+        File file = this.convertToFile(multipartFile, fileName);
+        String TEMP_URL = this.uploadZip(file, fileName);
         file.delete();
         return TEMP_URL;
     }

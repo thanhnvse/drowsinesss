@@ -14,4 +14,7 @@ public interface FileService {
     Object upload(MultipartFile multipartFile);
     Object download(String fileName) throws IOException;
     String getImgUrl(MultipartFile multipartFile) throws IOException, ExecutionException, InterruptedException;
+
+    String uploadZip(File file, String fileName) throws IOException, FirebaseAuthException, InterruptedException, ExecutionException;
+    String getZipUrl(MultipartFile multipartFile) throws IOException, ExecutionException, InterruptedException, FirebaseAuthException;
 }
