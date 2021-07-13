@@ -17,32 +17,15 @@ public class Firmware implements Serializable {
     @Column(
             name = "firmware_id"
     )
-
     private UUID firmwareId = UUID.randomUUID();
-    @Column(
-            name = "firmware_name",
-            nullable = false,
-            length = 50
-    )
 
-    private String firmwareName;
     @Column(
             name = "description",
             nullable = false,
             length = 256
     )
-
     private String description;
-    @GeneratedValue(
-            strategy = GenerationType.IDENTITY
-    )
-    @Column(
-            name = "version",
-            nullable = false,
-            updatable = false
-    )
 
-    private int version;
     @Column(
             name = "model_url",
             nullable = false

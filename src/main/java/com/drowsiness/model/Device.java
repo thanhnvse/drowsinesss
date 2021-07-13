@@ -34,8 +34,6 @@ public class Device implements Serializable {
     @JoinColumn(
             name = "firmware_id"
     )
-    @JsonBackReference
-    @JsonIgnore
     private Firmware firmware;
 
     @OneToMany(mappedBy = "device", cascade = CascadeType.ALL)

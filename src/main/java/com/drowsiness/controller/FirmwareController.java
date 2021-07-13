@@ -58,7 +58,6 @@ public class FirmwareController {
     @PostMapping({"/firmwares"})
     public ResponseEntity<?> createFirmware(@ModelAttribute FirmwareDTO fwDTO) throws InterruptedException, ExecutionException, IOException, FirebaseAuthException {
         Firmware fw = new Firmware();
-        fw.setFirmwareName(fwDTO.getFirmwareName());
         fw.setTimeDetection(fwDTO.getTimeDetection());
         fw.setDescription(fwDTO.getDescription());
         fw.setModelUrl(this.fileService.getZipUrl(fwDTO.getFile()));
