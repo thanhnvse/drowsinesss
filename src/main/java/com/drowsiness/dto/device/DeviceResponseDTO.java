@@ -1,5 +1,6 @@
 package com.drowsiness.dto.device;
 
+import com.drowsiness.model.Firmware;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,4 +13,6 @@ public class DeviceResponseDTO implements Serializable {
     private Long createdAt;
 
     private Long updatedAt;
+
+    private Firmware firmware;
 }
