@@ -72,6 +72,7 @@ public class UserDeviceController {
         dto.setCreatedAt(userdevice.getConnectedAt());
         dto.setUpdatedAt(userdevice.getUpdatedAt());
         dto.setFirmware(userdevice.getDevice().getFirmware());
+        dto.setDeviceId(userdevice.getDevice().getDeviceId());
         SearchResult<?> result = !dto.equals(Optional.empty())
                 ? new SearchResult<>(dto) : new SearchResult<>();
 
