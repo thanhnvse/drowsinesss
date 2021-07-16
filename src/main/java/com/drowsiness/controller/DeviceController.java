@@ -12,6 +12,7 @@ import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.Device;
 import com.drowsiness.model.User;
 import com.drowsiness.service.DeviceService;
+import com.drowsiness.service.FirmwareService;
 import com.drowsiness.utils.StaticFuntion;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,16 @@ import java.util.UUID;
 public class DeviceController {
     private DeviceService deviceService;
     private ModelMapper modelMapper;
+    private FirmwareService firmwareService;
 
     @Autowired
     public void setDeviceService(DeviceService deviceService) {
         this.deviceService = deviceService;
+    }
+
+    @Autowired
+    public void setFirmwareService(FirmwareService firmwareService) {
+        this.firmwareService = firmwareService;
     }
 
     @Autowired
@@ -53,6 +60,14 @@ public class DeviceController {
                 ? new SearchResult<>(searchDevice.get()): new SearchResult<>();
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    @PutMapping("/devices/{deviceId}/firmwares/{firmwareId}")
+    public ResponseEntity<?> updateFirmware(@PathVariable UUID deviceId, @PathVariable UUID firmwareId) {
+        Device device = deviceService.findDeviceByDeviceId(deviceId);
+        device.setFirmware(firmwareService.findFirmwareById(firmwareId).get());
+        deviceService.saveDevice(device);
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(device,"Your device has been updated successfully"));
     }
 
     @PostMapping("/devices")
