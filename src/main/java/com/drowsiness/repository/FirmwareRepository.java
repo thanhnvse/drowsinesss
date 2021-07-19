@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Repository
 public interface FirmwareRepository extends JpaRepository<Firmware, UUID> {
-    @Query("SELECT f FROM Firmware f WHERE f.createdAt = (SELECT MAX (createdAt) FROM Firmware )")
+    @Query("SELECT f FROM Firmware f WHERE f.isActive = true")
     Firmware findNewestFirmware();
 
     @Transactional
