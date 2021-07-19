@@ -30,21 +30,26 @@ public class Firmware implements Serializable {
             name = "model_url",
             nullable = false
     )
-
     private String modelUrl;
+
     @Column(
             name = "time_detection",
             nullable = false
     )
-
     private float timeDetection;
+
     @Column(
             name = "created_at",
             nullable = false,
             updatable = false
     )
-
     private Long createdAt;
+
+    @Column(
+            name = "is_active"
+    )
+    private boolean isActive;
+
     @Column(
             name = "updated_at"
     )

@@ -39,4 +39,9 @@ public class FirmwareServiceImpl implements FirmwareService {
     public Firmware findNewestFirmware() {
         return this.fwRepo.findNewestFirmware();
     }
+
+    @Override
+    public void deactivateFirmwaresExceptThis(UUID uuid) {
+        this.fwRepo.deactivateFirmwaresExceptThis(uuid);
+    }
 }

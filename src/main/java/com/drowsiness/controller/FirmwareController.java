@@ -1,9 +1,11 @@
 package com.drowsiness.controller;
 
+import com.drowsiness.dto.device.DeviceCreateDTO;
 import com.drowsiness.dto.firmware.FirmwareDTO;
 import com.drowsiness.dto.response.ApiResult;
 import com.drowsiness.dto.response.SearchListResult;
 import com.drowsiness.dto.response.SearchResult;
+import com.drowsiness.exception.ResourceNotFoundException;
 import com.drowsiness.model.Firmware;
 import com.drowsiness.service.FileService;
 import com.drowsiness.service.FirmwareService;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -62,8 +65,20 @@ public class FirmwareController {
         fw.setDescription(fwDTO.getDescription());
         fw.setModelUrl(this.fileService.getZipUrl(fwDTO.getFile()));
         fw.setCreatedAt(StaticFuntion.getDate());
+        fw.setActive(true);
         this.fwService.saveFirmware(fw);
-        ApiResult<?> apiResult = new ApiResult(fw, "Your data tracking has been created successfully");
+        this.fwService.deactivateFirmwaresExceptThis(fw.getFirmwareId());
+        ApiResult<?> apiResult = new ApiResult(fw, "New firmware has been created successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+    }
+
+    @PutMapping("/firmwares/{firmwareId}")
+    public ResponseEntity<?> activeFirmwareStatus(@PathVariable UUID firmwareId) {
+        Firmware fw = this.fwService.findFirmwareById(firmwareId).get();
+        fw.setActive(true);
+        this.fwService.saveFirmware(fw);
+        this.fwService.deactivateFirmwaresExceptThis(fw.getFirmwareId());
+        ApiResult<?> apiResult = new ApiResult(fw, "The firmware is activated!! Other firmwares are deactivated!!");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
 }

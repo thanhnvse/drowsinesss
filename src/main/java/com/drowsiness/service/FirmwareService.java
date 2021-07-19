@@ -16,4 +16,6 @@ public interface FirmwareService {
     void removeFirmware(Firmware firmware);
 
     Firmware findNewestFirmware();
+
+    void deactivateFirmwaresExceptThis(UUID uuid);
 }
