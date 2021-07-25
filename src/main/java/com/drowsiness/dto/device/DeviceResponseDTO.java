@@ -17,5 +17,9 @@ public class DeviceResponseDTO implements Serializable {
 
     private Long updatedAt;
 
+    private String serialId;
+
+    private boolean isActive;
+
     private Firmware firmware;
 }

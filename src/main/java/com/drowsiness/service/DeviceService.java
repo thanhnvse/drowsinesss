@@ -14,4 +14,6 @@ public interface DeviceService {
     List<Device> findAllDeviceByUserId(UUID userId);
     void removeDevice(Device device);
     String getDeviceNameById(UUID id);
+    int checkDuplicateSerialID(String serialId);
+    int checkDuplicateSerialID(String serialId, UUID deviceId);
 }

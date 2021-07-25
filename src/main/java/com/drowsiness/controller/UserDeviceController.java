@@ -123,7 +123,6 @@ public class UserDeviceController {
         if(listUD != null){
 
             for (UserDevice ud : listUD) {
-                System.out.println(ud.getDevice().getDeviceId());
                 ud.setConnected(false);
                 userDeviceService.saveUserDevice(ud);
             }

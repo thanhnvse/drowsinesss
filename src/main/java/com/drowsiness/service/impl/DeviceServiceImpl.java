@@ -54,4 +54,14 @@ public class DeviceServiceImpl implements DeviceService {
         return deviceRepository.findById(id).get().getDeviceName();
 
     }
+
+    @Override
+    public int checkDuplicateSerialID(String serialId) {
+        return deviceRepository.checkDuplicateSerialID(serialId);
+    }
+
+    @Override
+    public int checkDuplicateSerialID(String serialId, UUID deviceId) {
+        return deviceRepository.checkDuplicateSerialID(serialId, deviceId);
+    }
 }

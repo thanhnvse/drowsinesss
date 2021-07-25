@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class DeviceController {
     }
 
     @PutMapping("/devices/{deviceId}/firmwares/{firmwareId}")
-    public ResponseEntity<?> updateFirmware(@PathVariable UUID deviceId, @PathVariable UUID firmwareId) {
+    public ResponseEntity<?> setDeviceFirmware(@PathVariable UUID deviceId, @PathVariable UUID firmwareId) {
         Device device = deviceService.findDeviceByDeviceId(deviceId);
         device.setFirmware(firmwareService.findFirmwareById(firmwareId).get());
         deviceService.saveDevice(device);
@@ -72,23 +73,48 @@ public class DeviceController {
 
     @PostMapping("/devices")
     public ResponseEntity<?> createDevice(@RequestBody DeviceCreateDTO deviceDTO) {
-        Device reqDevice = modelMapper.map(deviceDTO, Device.class);
-//        reqUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        reqDevice.setCreatedAt(StaticFuntion.getDate());
-        Device createdDevice = deviceService.saveDevice(reqDevice);
 
-        DeviceResponseDTO deviceResponseDTO = modelMapper.map(createdDevice, DeviceResponseDTO.class);
-        ApiResult<?> apiResult = new ApiResult<>(deviceResponseDTO,"Your device has been created successfully");
-        return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+        if(deviceDTO.getSerialId() == null || deviceDTO.getSerialId().length() != 17) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SerialID is not valid!");
+        } else if (deviceService.checkDuplicateSerialID(deviceDTO.getSerialId().toUpperCase()) == 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SerialID is duplicated!");
+        } else {
+            deviceDTO.setSerialId(deviceDTO.getSerialId().toUpperCase());
+            Device reqDevice = modelMapper.map(deviceDTO, Device.class);
+            reqDevice.setCreatedAt(StaticFuntion.getDate());
+            reqDevice.setFirmware(firmwareService.findNewestFirmware());
+            Device createdDevice = deviceService.saveDevice(reqDevice);
+
+            DeviceResponseDTO deviceResponseDTO = modelMapper.map(createdDevice, DeviceResponseDTO.class);
+            ApiResult<?> apiResult = new ApiResult<>(deviceResponseDTO,"Your device has been created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+        }
+    }
+
+    @PutMapping("/devices/{deviceId}/status")
+    public ResponseEntity<?> setDeviceStatus(@PathVariable UUID deviceId, @RequestBody boolean isActive) {
+        return deviceService.findDeviceById(deviceId).map(device -> {
+            device.setActive(isActive);
+            deviceService.saveDevice(device);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(device,"Your device has been updated successfully"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Device not found with id " + deviceId));
     }
 
     @PutMapping("/devices/{deviceId}")
     public ResponseEntity<?> updateDevice(@PathVariable UUID deviceId, @RequestBody DeviceCreateDTO deviceRequest) {
+        if(deviceRequest.getSerialId() == null || deviceRequest.getSerialId().length() != 17) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SerialID is not valid!");
+        } else if (deviceService.checkDuplicateSerialID(deviceRequest.getSerialId().toUpperCase(), deviceId) == 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "SerialID is duplicated!");
+        }
+
         return deviceService.findDeviceById(deviceId).map(device -> {
             device.setDeviceName(deviceRequest.getDeviceName());
             device.setUpdatedAt(StaticFuntion.getDate());
+            device.setSerialId(deviceRequest.getSerialId().toUpperCase());
+            device.setActive(deviceRequest.isActive());
             deviceService.saveDevice(device);
-            return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(deviceRequest,"Your device has been updated successfully"));
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(device,"Your device has been updated successfully"));
         }).orElseThrow(() -> new ResourceNotFoundException("Device not found with id " + deviceId));
     }
 

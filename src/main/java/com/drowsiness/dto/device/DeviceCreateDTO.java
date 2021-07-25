@@ -7,4 +7,6 @@ import java.io.Serializable;
 @Data
 public class DeviceCreateDTO implements Serializable {
     private String deviceName;
+    private String serialId;
+    private boolean isActive;
 }

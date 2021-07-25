@@ -20,15 +20,20 @@ public class Device implements Serializable {
     @Column(name = "device_id")
     private UUID deviceId;
 
+    @Column(name = "serial_id")
+    private String serialId;
+
     @Column(name = "device_name",nullable = false, length = 50)
     private String deviceName;
-
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private Long createdAt;
 
     @Column(name = "updated_at")
     private Long updatedAt;
+
+    @Column(name = "active")
+    private boolean isActive;
 
     @ManyToOne
     @JoinColumn(

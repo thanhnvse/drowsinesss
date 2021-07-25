@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -130,8 +131,7 @@ public class AuthController {
     public ResponseEntity registerUser(@RequestBody UserCreateDTO userDTO) {
         //check existed username in db
         if(userRepository.findByUsername(userDTO.getUsername()) != null) {
-            return new ResponseEntity("Fail -> Username is already taken!",
-                    HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username is already taken!");
         }
 
         // Creating user's account
