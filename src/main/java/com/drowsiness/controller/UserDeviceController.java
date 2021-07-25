@@ -79,6 +79,14 @@ public class UserDeviceController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping("/user-devices/{userId}/lastest")
+    public ResponseEntity<?> getLastestConnected(@PathVariable UUID userId) {
+        UserDevice userdevice = userDeviceService.findByUserIdAndAndConnected(userId);
+        SearchResult<?> result = !userdevice.equals(null)
+                ? new SearchResult<>(userdevice.getUpdatedAt()) : new SearchResult<>();
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     @GetMapping("/user-devices/{userId}/user/history")
     public ResponseEntity<?> getUserHistoryConnected(@PathVariable UUID userId) {
         List<UserDevice> userDeviceList = userDeviceService.findAllDeviceConnectedByUserId(userId);
