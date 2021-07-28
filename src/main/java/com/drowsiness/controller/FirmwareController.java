@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.List;
@@ -65,6 +66,7 @@ public class FirmwareController {
         fw.setDescription(fwDTO.getDescription());
         fw.setModelUrl(this.fileService.getZipUrl(fwDTO.getFile()));
         fw.setCreatedAt(StaticFuntion.getDate());
+        fw.setUpdatedAt(StaticFuntion.getDate());
         fw.setActive(true);
         this.fwService.saveFirmware(fw);
         this.fwService.deactivateFirmwaresExceptThis(fw.getFirmwareId());
@@ -80,5 +82,17 @@ public class FirmwareController {
         this.fwService.deactivateFirmwaresExceptThis(fw.getFirmwareId());
         ApiResult<?> apiResult = new ApiResult(fw, "The firmware is activated!! Other firmwares are deactivated!!");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
+    }
+
+    @PutMapping("/firmwares/{firmwareId}/times")
+    public ResponseEntity<?> updateFirmwareDetectionTime(@PathVariable UUID firmwareId, @RequestParam("timeDetection") float timeDetection) {
+        return this.fwService.findFirmwareById(firmwareId).map(fw -> {
+            if(timeDetection < 1 || timeDetection > 3)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time Detection is not valid! (From 1 - 3)");
+            fw.setTimeDetection(timeDetection);
+            fw.setUpdatedAt(StaticFuntion.getDate());
+            this.fwService.saveFirmware(fw);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(fw,"Firmware " + firmwareId +" has been updated successfully"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Firmware not found with id " + firmwareId));
     }
 }
