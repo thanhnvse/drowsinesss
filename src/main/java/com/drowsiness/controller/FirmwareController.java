@@ -67,9 +67,9 @@ public class FirmwareController {
         fw.setModelUrl(this.fileService.getZipUrl(fwDTO.getFile()));
         fw.setCreatedAt(StaticFuntion.getDate());
         fw.setUpdatedAt(StaticFuntion.getDate());
-        fw.setActive(true);
+        fw.setActive(false);
         this.fwService.saveFirmware(fw);
-        this.fwService.deactivateFirmwaresExceptThis(fw.getFirmwareId());
+        //this.fwService.deactivateFirmwaresExceptThis(fw.getFirmwareId());
         ApiResult<?> apiResult = new ApiResult(fw, "New firmware has been created successfully");
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);
     }
