@@ -142,7 +142,6 @@ public class UserDeviceController {
         if(userDeviceService.checkExistedUser(userDeviceDTO.getUserId(),userDeviceDTO.getDeviceId())){
             UserDevice existedUser = userDeviceService.findByUserIdAndDeviceId(userDeviceDTO.getUserId(),userDeviceDTO.getDeviceId());
             existedUser.setConnected(true);
-            existedUser.setConnectedAt(StaticFuntion.getDate());
             existedUser.setUpdatedAt(StaticFuntion.getDate());
             UserDevice updateConnectedUserDevice = userDeviceService.saveUserDevice(existedUser);
             UserDeviceConnectedResponseDTO userDeviceUpdateResponseDTO = modelMapper.map(updateConnectedUserDevice, UserDeviceConnectedResponseDTO.class);
