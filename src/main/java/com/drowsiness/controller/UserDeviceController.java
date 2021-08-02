@@ -120,6 +120,7 @@ public class UserDeviceController {
         List<UserDevice> listUD = userDeviceService.findByDeviceID(userDeviceDTO.getDeviceId());
         if(listUD != null){
             for (UserDevice ud : listUD) {
+                ud.setDisconnectedAt(StaticFuntion.getDate());
                 ud.setConnected(false);
                 userDeviceService.saveUserDevice(ud);
             }
@@ -131,6 +132,7 @@ public class UserDeviceController {
         if(listUD != null){
 
             for (UserDevice ud : listUD) {
+                ud.setDisconnectedAt(StaticFuntion.getDate());
                 ud.setConnected(false);
                 userDeviceService.saveUserDevice(ud);
             }
