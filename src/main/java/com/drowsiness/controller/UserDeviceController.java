@@ -63,6 +63,7 @@ public class UserDeviceController {
         for (UserDevice ud: usersDevicesList
              ) {
             dto = new UserDeviceConnectDTO();
+            dto.setUserDeviceId(ud.getUserDeviceId());
             dto.setConnected(ud.isConnected());
             dto.setConnectedAt(ud.getConnectedAt());
             dto.setDisconnectedAt(ud.getDisconnectedAt());
