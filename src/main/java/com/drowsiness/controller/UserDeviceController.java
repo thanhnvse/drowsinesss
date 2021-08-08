@@ -55,6 +55,32 @@ public class UserDeviceController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @GetMapping("/user-devices/users/{deviceId}")
+    public ResponseEntity<?> getUsersConnectedDeviceWithDeviceId(@PathVariable UUID deviceId) {
+        List<UserDevice> usersDevicesList = userDeviceService.findUserDeviceByDeviceId(deviceId);
+        List<UserDeviceConnectDTO> usersList = new ArrayList<>();
+        UserDeviceConnectDTO dto;
+        for (UserDevice ud: usersDevicesList
+             ) {
+            dto = new UserDeviceConnectDTO();
+            dto.setConnected(ud.isConnected());
+            dto.setConnectedAt(ud.getConnectedAt());
+            dto.setDisconnectedAt(ud.getDisconnectedAt());
+            dto.setUpdatedAt(ud.getUpdatedAt());
+
+            dto.setUserId(ud.getAccountUser().getUserId());
+            dto.setUsername(ud.getAccountUser().getUsername());
+            dto.setFullName(ud.getAccountUser().getFullName());
+            dto.setPhoneNumber(ud.getAccountUser().getPhoneNumber());
+            dto.setEmail(ud.getAccountUser().getEmail());
+            dto.setAvatar(ud.getAccountUser().getAvatar());
+
+            usersList.add(dto);
+        }
+        SearchListResult<?> result = new SearchListResult<>(usersList);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     @GetMapping("/user-devices/{userId}/user")
     public ResponseEntity<?> getUserInDeviceConnectedByUserId(@PathVariable UUID userId) {
         User user = userDeviceService.findUserByUserDeviceConnected(userId);
@@ -87,6 +113,8 @@ public class UserDeviceController {
                 ? new SearchResult<>(userdevice.getUpdatedAt()) : new SearchResult<>();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+
 
     @GetMapping("/user-devices/{userId}/user/history")
     public ResponseEntity<?> getUserHistoryConnected(@PathVariable UUID userId) {
