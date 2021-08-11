@@ -35,6 +35,9 @@ public class S3Controller {
 
         GitControl gitControl = new GitControl();
         gitControl.cloneRepo();
+
+        
+
         gitControl.cleanDir();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(apiResult);

@@ -35,6 +35,7 @@ public class GitControl {
     private CredentialsProvider cp;
     private String name = "datpro7703@gmail.com";
     private String password = "datproo0399";
+    private Git result;
 
     public GitControl() throws IOException {
         this.localRepo = new FileRepository(localPath);
@@ -43,12 +44,14 @@ public class GitControl {
     }
 
     public void cleanDir() throws IOException {
+        result.getRepository().close();
+        result.close();
         File f = new File(localPath);
         FileUtils.deleteDirectory(f);
     }
 
     public void cloneRepo() throws IOException, NoFilepatternException, GitAPIException {
-        Git.cloneRepository()
+        result = Git.cloneRepository()
                 .setURI(remotePath)
                 .setDirectory(new File(localPath))
                 .call();
