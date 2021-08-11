@@ -49,7 +49,7 @@ public class GitControl {
         bw.newLine();
         bw.write("description=" + description);
         bw.newLine();
-        bw.write(String.valueOf(StaticFuntion.getDate()));
+        bw.write("xxx=" + String.valueOf(StaticFuntion.getDate()));
         bw.flush();
 
         FileReader fr = new FileReader(file);
