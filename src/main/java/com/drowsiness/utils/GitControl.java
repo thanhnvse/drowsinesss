@@ -1,6 +1,5 @@
 package com.drowsiness.utils;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.Iterator;
 
@@ -35,7 +34,6 @@ public class GitControl {
     private CredentialsProvider cp;
     private String name = "datpro7703@gmail.com";
     private String password = "datproo0399";
-    private Git result;
 
     public GitControl() throws IOException {
         this.localRepo = new FileRepository(localPath);
@@ -43,15 +41,33 @@ public class GitControl {
         git = new Git(localRepo);
     }
 
+    public void editText(float timeDetection, String description) throws  IOException {
+        File file = new File(localPath + "/tmp.txt");
+        FileWriter fw = new FileWriter(file);
+        BufferedWriter bw = new BufferedWriter(fw);
+        bw.write("timeDetection=" + timeDetection);
+        bw.newLine();
+        bw.write("description=" + description);
+        bw.newLine();
+        bw.write(String.valueOf(StaticFuntion.getDate()));
+        bw.flush();
+
+        FileReader fr = new FileReader(file);
+        BufferedReader br = new BufferedReader(fr);
+
+        br.close();
+        bw.close();
+    }
+
     public void cleanDir() throws IOException {
-        result.getRepository().close();
-        result.close();
+        git.getRepository().close();
+        git.close();
         File f = new File(localPath);
         FileUtils.deleteDirectory(f);
     }
 
     public void cloneRepo() throws IOException, NoFilepatternException, GitAPIException {
-        result = Git.cloneRepository()
+        git = Git.cloneRepository()
                 .setURI(remotePath)
                 .setDirectory(new File(localPath))
                 .call();

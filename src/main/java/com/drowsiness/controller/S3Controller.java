@@ -29,6 +29,7 @@ public class S3Controller {
         try {
             this.amazonS3ClientService.uploadFileToS3Bucket(fwDTO.getFile(), true);
             apiResult = new ApiResult(fwDTO.getFile().getName(), "Upload dataset success, please wait for training process!");
+
         } catch (Exception e) {
             apiResult = new ApiResult("Error when uploading!");
         }
@@ -36,7 +37,11 @@ public class S3Controller {
         GitControl gitControl = new GitControl();
         gitControl.cloneRepo();
 
-        
+        gitControl.editText(fwDTO.getTimeDetection(), fwDTO.getDescription());
+
+        gitControl.addToRepo();
+        gitControl.commitToRepo("Send trainning command!");
+        gitControl.pushToRepo();
 
         gitControl.cleanDir();
 
