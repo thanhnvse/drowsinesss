@@ -144,5 +144,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>tddd-server</finalName>
     </build>
 </project>
