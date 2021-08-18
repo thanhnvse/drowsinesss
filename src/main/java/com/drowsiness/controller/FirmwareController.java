@@ -95,4 +95,17 @@ public class FirmwareController {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(fw,"Firmware " + firmwareId +" has been updated successfully"));
         }).orElseThrow(() -> new ResourceNotFoundException("Firmware not found with id " + firmwareId));
     }
+
+    @PutMapping("/firmwares/{firmwareId}/info")
+    public ResponseEntity<?> updateFirmwareInfomation(@PathVariable UUID firmwareId, @RequestParam("timeDetection") float timeDetection, @RequestParam("description") String description) {
+        return this.fwService.findFirmwareById(firmwareId).map(fw -> {
+            if(timeDetection < 1 || timeDetection > 3)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Time Detection is not valid! (From 1 - 3)");
+            fw.setTimeDetection(timeDetection);
+            fw.setUpdatedAt(StaticFuntion.getDate());
+            fw.setDescription(description);
+            this.fwService.saveFirmware(fw);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(fw,"Firmware " + firmwareId +" has been updated successfully"));
+        }).orElseThrow(() -> new ResourceNotFoundException("Firmware not found with id " + firmwareId));
+    }
 }
