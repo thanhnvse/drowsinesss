@@ -160,7 +160,6 @@ public class UserDeviceController {
         //withdraw other device user connected in
         listUD = userDeviceService.findByUserId(userDeviceDTO.getUserId());
         if(listUD != null){
-
             for (UserDevice ud : listUD) {
                 ud.setDisconnectedAt(StaticFuntion.getDate());
                 ud.setConnected(false);
@@ -173,6 +172,7 @@ public class UserDeviceController {
             UserDevice existedUser = userDeviceService.findByUserIdAndDeviceId(userDeviceDTO.getUserId(),userDeviceDTO.getDeviceId());
             existedUser.setConnected(true);
             existedUser.setUpdatedAt(StaticFuntion.getDate());
+            existedUser.setConnectedAt(StaticFuntion.getDate());
             UserDevice updateConnectedUserDevice = userDeviceService.saveUserDevice(existedUser);
             UserDeviceConnectedResponseDTO userDeviceUpdateResponseDTO = modelMapper.map(updateConnectedUserDevice, UserDeviceConnectedResponseDTO.class);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResult<>(userDeviceUpdateResponseDTO,"Your acccount has been connected with device"));
