@@ -110,6 +110,15 @@ public class UserController {
         }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
     }
 
+    @PutMapping("/user/{userId}/ban")
+    public ResponseEntity<?> banUser(@PathVariable UUID userId, @RequestParam("active") boolean active) {
+        return userService.findUserById(userId).map(user -> {
+            user.setActive(active);
+            userService.saveUser(user);
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResult<>(user,"Your account has been updated successfully"));
+        }).orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+    }
+
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<?> removeUser(@PathVariable UUID userId) {
         return userService.findUserById(userId).map(user -> {
